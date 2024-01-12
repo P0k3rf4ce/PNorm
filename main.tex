@@ -1,0 +1,527 @@
+\documentclass{article}
+\usepackage[margin=1.2in]{geometry} % margins
+\usepackage{calrsfs}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+%\usepackage{parskip}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{enumitem}
+
+\renewcommand{\implies}{\Rightarrow}
+\newcommand{\longimplies}{\Longrightarrow}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\cl}[1]{\overline{#1}}
+\renewcommand{\emptyset}{\varnothing}
+\newcommand{\norm}[1]{\left\|#1\right\|}
+\newcommand{\maxnorm}[1]{\left\|#1\right\|_{\text{max}}}
+\newcommand{\opnorm}[1]{\left\|#1\right\|_{\mathrm{op}}}
+
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+
+% Theorem environments
+\usepackage{amsthm}
+
+\theoremstyle{plain} % The "plain" style italicizes all body text.
+	\newtheorem{thm}{Theorem}
+		\numberwithin{thm}{section} % Theorem numbers are determined by section.
+	\newtheorem{lemma}[thm]{Lemma}
+	\newtheorem{prop}[thm]{Proposition}
+	\newtheorem{cor}[thm]{Corollary}
+	\newtheorem{conj}[thm]{Conjecture}
+
+\theoremstyle{definition} % The "definition" style does not italicize body text..
+    \newtheorem{defn}[thm]{Definition}
+	\newtheorem{example}[thm]{Example}
+
+% Section header customization
+\usepackage{titlesec}
+
+\titleformat{\section}
+    [block] %shape
+    {\bf\large} %format
+    {\textsection\thesection} %label
+    {1em} %sep
+    {} %before header name
+    [] %after header name
+    
+\titleformat{\subsection}
+    [runin]
+    {\bf}
+    {\thesubsection}
+    {0.5em}
+    {}
+    [.]
+
+\begin{document}
+
+\begin{center}
+    {\Large \textbf{$p$-Norm is a Norm}}
+
+    \medskip
+    {\large T. Sompura}
+\end{center}
+
+\begin{abstract}
+    We show that the $p$-norm in $\R^n$ is indeed a norm. We state and prove the ``magic norm" theorem, and we analyse a certain type of a single variable function to help prove that $p$-norm is a norm. Then, we apply our $p$-norm theorem on $\R^n$ to prove the $p$-norms on the spaces of sequences and continuous functions.
+\end{abstract}
+
+\section{Introduction}
+
+When working with the real normed vector space $\R^n$, we commonly use the Euclidean norm or the 2-norm, $\|\vec{x}\|_2 = \sqrt{x_1^2 + x_2^2 + \cdots + x_n^2}$, as it is how distance is measured in the real world. Less commonly we use the taxicab norm or 1-norm, $\|\vec{x}\|_1 = |x_1| + |x_2| + \cdots + |x_n|$, and the max-norm, $\maxnorm{\vec{x}} = \max(|x_1|, |x_2|, \dots, |x_n|)$ which are generally simpler to work with. We generalize the 1-norm and the 2-norm to the $p$-norm with $p > 0$:
+\[
+    \|\vec{x}\|_p = \left(|x_1|^p + |x_2|^p + \cdots + |x_n|^p\right)^{1/p}
+\]
+It is fairly simple to prove positive definiteness and homogeneity for the $p$-norm, however, proving the triangle inequality is difficult. In this paper, we prove the following theorem:
+\begin{thm}[$p$-Norm on $\R^n$]
+    \label{PNormTheorem}
+    For $n \geq 2$, the function $\|\cdot\|_p: \R^n \to \R,\\ \|\vec{x}\|_p = \left(|x_1|^p + |x_2|^p + \cdots + |x_n|^p\right)^{1/p}$ is a norm if and only if $p \geq 1$.
+\end{thm}
+Theorem 1.1 is proven using the magic norm theorem and some lemmas about differentiable single variable functions with non-decreasing derivative. The magic norm theorem is proven in \textsection\ref{MagicNormSection}. The lemmas for functions with non-decreasing derivatives are proven in \textsection\ref{FunctionLemmasSection}. Theorem \ref{PNormTheorem} is proven in \textsection\ref{PNormSection}.
+
+\section{Magic Norm Theorem}\label{MagicNormSection}
+
+In this section, we state and prove the Magic Norm Theorem. Given a subset on a normed vector space with certain properties, the Magic Norm Theorem proves the existence of a norm on this vector space such that the given subset is the closed unit ball.
+
+We first define three properties on subsets of a real normed vector space $(X, \|\cdot\|)$.
+
+\begin{defn}[Absorbing]
+    \label{absorbing}
+    $B \subseteq X$ is absorbing if and only if for all $\vec{x} \in X$ there exists $t > 0$ so that $\vec{x} = t\vec{b}$ for some $\vec{b} \in B$.
+\end{defn}
+
+\begin{defn}[Balanced]
+    \label{balanced}
+    $B \subseteq X$ is balanced if and only if for all $\vec{b} \in B$, we have $t\vec{b} \in B$ for all $t \in [-1, 1]$.
+\end{defn}
+
+\begin{defn}[Convex]
+    \label{convex}
+    $B \subseteq X$ is convex if and only if for all $\vec{x}, \vec{y} \in B$, we have $t\vec{x} + (1 - t)\vec{y} \in B$ for all $t \in [0, 1]$.
+\end{defn}
+
+Also, recall that in a finite dimensional normed vector space, all norms are equivalent. This means that if a set is closed and bounded over one norm, it must be closed and bounded over all norms.
+
+Now, we can state and prove the Magic Norm Theorem.
+
+\begin{thm}[Magic Norm Theorem]
+    \label{Magic Norm Theorem}
+    Let $X$ be a finite dimensional normed vector space, and let $B \subseteq X$. Then, there exists a norm $\|\cdot\|: X \to \R$ so that $B = \{\vec{x} \in X: \|\vec{x}\| \leq 1\}$ if and only if $B$ is absorbing, balanced, convex, closed, and bounded.
+\end{thm}
+
+\begin{proof}
+We first prove the forward direction. Suppose there exists a norm $\|\cdot\|: X \to \R$ so that $B = \{\vec{x} \in X: \|\vec{x}\| \leq 1\}$. Next, we show that $B$ satisfies the 5 properties.
+
+\underbar{Absorbing:} Let $\vec{X} \in X$. If $\vec{x} = \vec{0}$, then we take $\vec{b} = \vec{0}$ which is in $B$ since $\|\vec{0}\| = 0 \leq 1$. This means that $\vec{x} = \vec{0} = t\vec{b}$ for any $t > 0$. If $\vec{x} \neq \vec{0}$, we can take $\vec{b} = \frac{1}{\|\vec{x}\|}\vec{x}$ and $t = \|\vec{x}\| > 0$. We then get $t\vec{b} = \|\vec{x}\|\frac{1}{\|\vec{x}\|}\vec{x} = \vec{x}$. In both cases, we are able to write $\vec{x} = t\vec{b}$ for some $t > 0$ and $\vec{b} \in B$, hence, $B$ is absorbing.
+
+\underbar{Balanced:} Let $\vec{b} \in B$ and $t \in [-1, 1]$. Then, $\|\vec{b}\| \leq 1$ and $|t| \leq 1$, so
+\[
+    \|t\vec{b}\| = |t|\|\vec{b}\| \leq 1
+\]
+Thus, $t\vec{b} \in B$, and hence, $B$ is balanced.
+
+\underbar{Convex:} Let $\vec{x}, \vec{y} \in B$ and $t \in [0, 1]$. Then, $\|x\|, \|y\| \leq 1$, $|t| = t$, and $|1 - t| = 1 - t$. Using the triangle inequality and homogeneity, we get
+\[
+    \|t\vec{x} + (1 - t)\vec{y}\| \leq \|t\vec{x}\| + \|(1 - t)\vec{y}\| = t\|\vec{x}\| + (1 - t)\|\vec{y}\| \leq t + 1 - t = 1
+\]
+Thus, $t\vec{x} + (1 - t)\vec{y} \in B$, and hence, $B$ is convex.
+
+\underbar{Closed:} We will show that $B$ is closed over $\|\cdot\|$. Let $\vec{x} \in \cl{B}$. Then, for all $\varepsilon > 0$, there exists $\vec{p}_\varepsilon \in B \cap B(\vec{x}, \varepsilon) \implies \|\vec{p}_\varepsilon\| \leq 1$ and $\|\vec{p}_\varepsilon - \vec{x}\| < \varepsilon$. Then, we get
+\[
+    \|\vec{x}\| \leq \|\vec{x} - \vec{p}_\varepsilon\| + \|\vec{p}_\varepsilon\| < 1 + \varepsilon
+\]
+Letting $\varepsilon \to 0$, we get $\|\vec{x}\| < 1 + \varepsilon \implies \|\vec{x}\| \leq 1 \implies \vec{x} \in B$. Thus, $B$ is closed.
+
+\underbar{Bounded:} Let $\vec{x}, \vec{y} \in B$. Then,
+\[
+    \|\vec{x} - \vec{y}\| \leq \|\vec{x}\| + \|\vec{y}\| \leq 2
+\]
+Thus, distances between points in $B$ are bounded, and hence, $B$ is bounded.\\
+
+Now, we prove the converse direction. Let $B$ be absorbing, balanced, convex, closed, and bounded. We define the function $N: X \to \R$, 
+\[
+N(\vec{x}) = \inf\left\{\frac{1}{t}: t > 0 \text{ and } t\vec{x} \in B\right\}
+\]
+Notice that this set is bounded below by 0. Furthermore, notice that since $B$ is absorbing, for any $\vec{x} \in X$, there exists $t > 0$ and $\vec{b} \in B$ so that $\vec{x} = t\vec{b} \implies \frac{1}{t}\vec{x} = \vec{b} \in B$. This means that $t$ is an element of the set used in the definition of $N$, hence that set is non-empty. Thus, the infimum exists for all $\vec{x} \in X$, and so $N$ is well-defined. Next, we show that $N$ is a norm.
+
+\underbar{Positive Definiteness:} Clearly, we have $N(\vec{x}) = \inf\{\frac{1}{t}: t > 0 \text{ and } t\vec{x} \in B\} \geq 0$ for all $\vec{x} \in X$ since the set only contains positive values. Also, $N(\vec{0}) = \inf\{\frac{1}{t}: t > 0 \text{ and } t\vec{0} \in B\} = \inf\{\frac{1}{t}: t > 0\} = 0$. Now, assume $N(\vec{x}) = 0$. Then, we can take a sequence $(t_n)$ in $\R$ such that $t_n > 0$ and $t_n\vec{x} \in B$ for all $n \in \N$ and $\frac{1}{t_n} \to 0$ as $n \to \infty$. This means that $t_n \to \infty$ while $t_n\vec{x} \in B$. Notice that if $\vec{x} \neq \vec{0}$, then we would have that $B$ is unbounded, hence we must have $\vec{x} = \vec{0}$. Therefore, $N(\vec{x}) \geq 0$ for all $\vec{x} \in X$ and $N(\vec{x}) = 0 \iff \vec{x} = \vec{0}$, so $N$ is positive definite.
+
+\underbar{Homogeneity:} Let $c \in \R$ and $\vec{x} \in X$. If $c = 0$, then $N(c\vec{x}) = N(0\vec{x}) = 0 = 0 \cdot N(\vec{x}) = |c| N(\vec{x})$, hence $N$ is homogeneous in this case. Now, take $c \neq 0$. Also, notice that since $B$ is balanced, $t \cdot c\vec{x} \in B \iff -t \cdot c\vec{x} \in B$ for $t > 0$, so we can replace $t \cdot c\vec{x} \in B$ with $t \cdot |c|\vec{x} \in B$. Now,
+\begin{align*}
+N(c\vec{x}) &= \inf\left\{\frac{1}{t}: t > 0 \text{ and } t \cdot c\vec{x} \in B\right\} &\\
+&= \inf\left\{\frac{1}{t}: t \cdot |c| > 0 \text{ and } t \cdot |c|\vec{x} \in B\right\} &\\
+&= |c|\inf\left\{\frac{1}{t \cdot |c|}: t \cdot |c| > 0 \text{ and } t \cdot |c|\vec{x} \in B\right\} &\\
+&= |c|\inf\left\{\frac{1}{t}: t > 0 \text{ and } t\vec{x} \in B\right\} &\\
+&= |c| \cdot N(\vec{x})
+\end{align*}
+Thus, $N$ is homogeneous.
+
+\underbar{Triangle Inequality:} Let $\vec{x}, \vec{y} \in X$. Then, by definition of $N$, we can take sequences $(t_n), (s_n)$ in $\R$ so that for all $n \in \N$ $t_n, s_n > 0$ and $t_n\vec{x}, s_n\vec{y} \in B$, and $\frac{1}{t_n} \to N(\vec{x})$ and $\frac{1}{s_n} \to N(\vec{y})$. Notice that for all $n \in \N$, we can take $t = s_n / (t_n + s_n) \in [0, 1]$ and apply convexity of $B$ to get the following: 
+\[
+t_n\vec{x}, s_n\vec{y} \in B \longimplies t\vec{x} + (1-t)\vec{y} \in B \longimplies \frac{s_n}{t_n + s_n}t_n\vec{x} + \left(1 - \frac{s_n}{t_n + s_n}\right)s_n\vec{y} = \frac{t_ns_n}{t_n + s_n}(\vec{x} + \vec{y}) \in B
+\]
+This means that $(t_ns_n / (t_n + s_n))^{-1} \in \{\frac{1}{t}: t > 0 \text{ and } t(\vec{x} + \vec{y})\}$, so the infimum of this set must be less than or equal to $(t_ns_n / (t_n + s_n))^{-1}$. Thus, we have
+\[
+    N(\vec{x} + \vec{y}) = \inf\left\{\frac{1}{t}: t > 0 \text{ and } t(\vec{x} + \vec{y}) \in B\right\} \leq \left(\frac{t_ns_n}{t_n + s_n}\right)^{-1} = \frac{1}{t_n} + \frac{1}{s_n} \to N(\vec{x}) + N(\vec{y})
+\]
+Therefore, $N$ has the triangle inequality property.
+
+Since $N$ is positive definite, homogeneous, and has triangle inequality, it must be a norm. Hence, we define our norm as $\norm{\cdot} = N$. Now, we show that $B = \{\vec{x} \in X: \norm{\vec{x}} \leq 1\}$ by showing both subset inclusions.
+
+Let $\vec{x} \in B$. Then, we have that $1 \in \{\frac{1}{t}: t > 0 \text{ and } t\vec{x} \in B\}$, so $\norm{\vec{x}} = \inf\{\frac{1}{t}: t > 0 \text{ and } t\vec{x} \in B\} \leq 1$. Hence, $B \subseteq \{\vec{x} \in X: \norm{\vec{x}} \leq 1\}$.
+
+Now, let $\vec{x} \in X$ so that $\norm{\vec{x}} \leq 1$. We will consider the cases $\norm{\vec{x}} = 0$, $\norm{\vec{x}} = 1$, and $0 < \norm{\vec{x}} < 1$ separately.
+
+\textit{Case 1:} $\norm{\vec{x}} = 0$. Then, we must have $\vec{x} = 0$ by positive definiteness. Taking any $\vec{b} \in B$ and $t = 0 \in [-1, 1]$, we apply the balanced property of $B$ to get $t\vec{b} = \vec{0} = \vec{x} \in B$.
+
+\textit{Case 2:} $\norm{\vec{x}} = 1$. Then, by definition of $\|\cdot\|$, we can take a sequence $(t_n)$ in $\R$ so that $t_n > 0$ and $t_n\vec{x} \in B$ for all $n \in \N$ and $\frac{1}{t_n} \to 1$. Notice that $\frac{1}{t_n} \to 1$ is equivalent to $t_n \to 1$. In turn, this implies that $t_n\vec{x} \to \vec{x}$. Since $t_n\vec{x} \in B$ for all $n \in \N$, we have that $\vec{x}$ is a limit point of $B$. Since $B$ is closed, $\vec{x} \in B$. 
+
+\textit{Case 3:} $0 < \norm{\vec{x}} < 1$. Then, taking $c = \frac{1}{\norm{\vec{x}}} > 0$, notice that $\norm{c\vec{x}} = 1$. As we have shown above, this implies that $c\vec{x} \in B$. Now, since $\frac{1}{c} = \norm{\vec{x}} \in [-1, 1]$, we can apply the balanced property of $B$ to get that $\frac{1}{c}c\vec{x} = \vec{x} \in B$.
+
+Since in all cases we get $\vec{x} \in B$, we must have $\{\vec{x} \in X: \norm{\vec{x}} \leq 1\} \subseteq B$.
+
+Therefore, there exists a norm $\norm{\cdot}: X \to \R$ so that $B = \{\vec{x} \in X: \norm{\vec{x}} \leq 1\}$.
+
+\end{proof}
+
+The Magic Norm Theorem can be used to prove \ref{PNormTheorem} by showing that the closed unit ball that the $p$-norm would create has certain properties, rather than showing that the $p$-norm has the norm properties. This is done in \textsection\ref{PNormSection}.
+
+\section{Differentiable Functions with Non-Decreasing Derivative}\label{FunctionLemmasSection}
+
+In this section, we prove a technical lemma (\ref{mainlemma}) for an oddly specific type of function. Note that this section deals with single-variable functions, so we use the classic, single-variable notion of the derivative.
+
+\begin{lemma}
+    \label{mainlemma}
+    Let $f: \R \to \R$ be continuously differentiable and twice differentiable on $\R$ except finitely many points. Furthermore, suppose that for all $t \in \R$ for which $f$ is twice differentiable, $f''(t) \geq 0$, and that $\lim_{t \to -\infty} f'(t) = -\infty$ and $\lim_{t \to \infty} f'(t) = \infty$. Then, there exists a point $t_0 \in \R$ so that $f$ is non-increasing on $(-\infty, t_0]$ and non-decreasing on $[t_0, \infty)$.
+\end{lemma}
+
+To clarify, we define non-increasing and non-decreasing in the following way:
+
+\begin{defn}[Non-Increasing]
+    \label{nonincdef}
+    Let $f: U \to \R$ where $U \subseteq \R$. Then, $f$ is non-increasing on $V \subseteq U$ if and only if for all $x, y \in V$, $x < y \implies f(x) \geq f(y)$.
+\end{defn}
+
+\begin{defn}[Non-Decreasing]
+    \label{nondecdef}
+    Let $f: U \to \R$ where $U \subseteq \R$. Then, $f$ is non-decreasing on $V \subseteq U$ if and only if for all $x, y \in V$, $x < y \implies f(x) \leq f(y)$.
+\end{defn}
+
+Before proving Lemma \ref{mainlemma}, we prove two additional proposition.
+
+\begin{prop}
+    \label{nonincprop}
+    Let $f: I \to \R$ be differentiable where $I \subseteq \R$ is an interval. Suppose that $f'(t) \leq 0$ for all $t \in I$. Then, $f$ is non-increasing on its domain.
+\end{prop}
+
+\begin{proof}
+Let $x, y \in I$ and assume $x < y$. Since $I$ is an interval and $x, y \in I$, we must have $[x, y] \subseteq I$. Furthermore, $f$ is continuous and differentiable on $[x, y]$. By the classic Mean Value Theorem, there exists $c \in (x, y)$ so that
+\[
+    \frac{f(y) - f(x)}{y - x} = f'(c) \leq 0
+\]
+Since $x < y$, we have $y - x > 0$, so $\frac{f(y) - f(x)}{y - x} \leq 0 \implies f(y) - f(x) \leq 0 \implies f(x) \geq f(y)$. Therefore, $f$ is non-increasing.
+
+\end{proof}
+
+\begin{prop}
+    \label{nondecprop}
+    Let $f: I \to \R$ be differentiable where $I \subseteq \R$ is an interval. Suppose that $f'(t) \geq 0$ for all $t \in I$. Then, $f$ is non-decreasing on its domain.
+\end{prop}
+
+\begin{proof}
+We define the function $g: I \to \R$, $g(t) = -f(t)$. Since $f$ is differentiable on $I$, $g$ must also be differentiable. Furthermore, for all $t \in I$, we have $g'(t) = -f'(t) \leq 0$. Applying Proposition \ref{nonincprop}, we have that for all $x, y \in I$, $x < y \implies g(x) \geq g(y) \implies -f(x) \geq -f(y) \implies f(x) \leq f(y)$. Therefore, $f$ is non-decreasing.
+
+\end{proof}
+
+Now, we can prove Lemma \ref{mainlemma}.
+
+\begin{proof}[Proof (Lemma \ref{mainlemma}).]
+We take $\{t_1, \dots, t_n\} \subseteq \R$ to be the points where $f$ is not twice continuously differentiable. Then, we define the intervals $I_0 = (-\infty, t_1)$, $I_j = (t_j, t_{j + 1})$ for $1 \leq j \leq n - 1$, and $I_n = (t_n, \infty)$. We define functions $f_j: I_j \to \R$, $f_j(t) = f'(t)$, for $0 \leq j \leq n$. Notice that all $f_j$'s are differentiable since $f$ is twice differentiable on $\R \setminus \{t_1, \dots, t_n\}$ and $I_j$'s exclude all $t_i$'s. Furthermore, for all $0 \leq j \leq n$, $f'_j(t) = f''(t) \geq 0$. Thus, applying Proposition \ref{nondecprop}, we have that $f_j$ is non-decreasing for all $0 \leq j \leq n$. Hence, $f'$ is non-decreasing on each of $I_j$'s individually.
+
+Furthermore, we can show that $I_j$'s can be extended to their closures while keeping $f'$ non-decreasing on that $I_j$. Take $j \in \{1, \dots, n\}$ and consider $t_j$ and $I_{j - 1}$. Take $x \in I_{j - 1}$, and note that $(x, t_j) \subseteq I_{j - 1}$. Then, for all $y \in (x, t_j)$, $f'(x) \leq f'(y) \to f'(t_j)$ as $y \to t_j^-$ since $f'$ is continuous. Thus, $f'$ is non-decreasing on $I_{j - 1} \cup \{t_j\}$. Now, consider $I_{j}$. Take $y \in I_j$, and note that $(t_j, y) \subseteq I_j$. Then, for all $x \in (t_j, y)$, $f'(y) \geq f'(x) \to f'(t_j)$ as $x \to t_j^+$ since $f'$ is continuous. Thus, $f'$ is non-decreasing on $\{t_j\} \cup I_j$.
+
+Now, we take $x, y \in \R$ and assume $x < y$. If $x \in I_n = (t_n, \infty)$, then also $y \in I_n$. Since $f'$ is non-decreasing on $I_n$, we have $f'(x) \leq f'(y)$ in this case. Otherwise, we take $1 \leq i \leq n - 1$ so that $x \in I_i \cup \{t_{i + 1}\}$. If $y \in I_i \cup \{t_{i + 1}\}$, then  since $f'$ is non-decreasing on $I_{i} \cup \{t_{i + 1}\}$, we have $f'(x) \leq f'(y)$ in this case as well. Now, we can take $i + 1 \leq j \leq n$ so that $y \in \{t_j\} \cup I_j$. Since $f'$ is non-decreasing on $I_{k - 1} \cup \{t_{k}\}$ and $\{t_k\} \cup I_k$ for all $1 \leq k \leq n$, we have 
+\[
+f'(x) \leq f'(t_{i + 1}) \leq f'(c_{i + 1}) \leq f'(t_{i + 2}) \leq \cdots \leq f'(c_{j - 1}) \leq f'(t_j) \leq f'(y)
+\]
+where $c_k$ is some element of $I_k$. Thus, in all cases, $f'(x) \leq f'(y)$, hence $f'$ is non-decreasing on $\R$.
+
+Since $\lim_{t \to -\infty}f'(t) = -\infty$ and $\lim_{t \to \infty}f'(t) = \infty$, there are some $a, b \in \R$ so that $f'(a) < 0$ and $f'(b) > 0$. Since $f'$ is continuous on $\R$, by the single variable Intermediate Value Theorem, there exists some $t_0 \in (a, b)$ so that $f'(t_0) = 0$. Since $f'$ is non-decreasing, we have that for all $x \in (-\infty, t_0]$, $f'(x) \leq f'(t_0) = 0$. Similarly, for all $x \in [t_0, \infty)$, $f'(x) \geq f'(t_0) = 0$. Applying Proposition \ref{nonincprop}, $f$ is non-increasing on $(-\infty, t_0]$, and applying Proposition \ref{nondecprop}, $f$ is non-decreasing on $[t_0, \infty)$, which is exactly what we wanted to prove.
+
+\end{proof}
+
+\section{Proof of the $p$-norm Theorem}\label{PNormSection}
+
+In this section, we prove Theorem \ref{PNormTheorem}.
+
+\begin{proof}[Proof (Theorem \ref{PNormTheorem}).]
+We prove the theorem by showing that if $p < 1$, then $\norm{\cdot}_p$ is not a norm, and that if $p \geq 1$, then $\norm{\cdot}_p$ is a norm.
+
+Let $p < 1$, and consider the function $\norm{\cdot}_p: \R^n \to \R$, 
+\[
+\norm{\vec{x}}_p = \left(|x_1|^p + |x_2|^p + \cdots + |x_n|^p\right)^{1/p}
+\]
+Notice that for $p \leq 0$, $\norm{\vec{0}}_p = \left(0^p + 0^p + \cdots + 0^p\right)^{1/p}$ is undefined, since $0^p$ is undefined for $p \leq 0$. This means that $N$ is not a norm for such $p$.
+
+For $0 < p < 1$, consider the unit vectors $\vec{e}_1 = (1, 0, \dots, 0) \in \R^n$ and $\vec{e}_2 = (0, 1, 0, \dots, 0) \in \R^n$. Then we get
+\[
+    \norm{\vec{e}_1 + \vec{e}_2}_p = \norm{(1, 1, 0, \dots, 0)}_p = (1^p + 1^p + 0^p + \cdots + 0^p)^{1/p} = 2^{1/p}
+\]
+and
+\[
+    \norm{\vec{e}_1}_p = \norm{\vec{e}_2}_p = (1^p)^{1/p} = 1
+\]
+Since $0 < p < 1$, $\frac{1}{p} > 1$, so 
+\[
+\norm{\vec{e}_1 + \vec{e}_2}_p = 2^{1/p} > 2 = 1 + 1 = \norm{\vec{e}_1}_p + \norm{\vec{e}_2}_p
+\]
+which means that $\norm{\cdot}_p$ does not satisfy the triangle inequality. Therefore, $\norm{\cdot}_p$ is not a norm for $p < 1$.\\
+
+Now, let $p \geq 1$. We will handle the $p = 1$ case separately.
+
+\underbar{Positive Definiteness:} Let $\vec{x} \in \R^n$. Then, $\norm{\vec{x}}_1 = (|x_1|^1 + \cdots + |x_n|^1)^{1/1} = |x_1| + \cdots + |x_n|$. Notice that for all $i$, $|x_i| \geq 0$, so we must have $\norm{\vec{x}}_1 \geq 0$. Also, $\|\vec{0}\|_1 = |0| + \cdots + |0| = 0$. Now, assume $\norm{\vec{x}}_1 = 0$. Then, 
+\[
+    \norm{\vec{x}}_1 = |x_1| + \cdots + |x_n| = 0
+\]
+$|x_1| + \cdots + |x_n|$ is a sum of non-negative terms, so it can only be $0$ if each individual term is 0. Thus, for all $i$, $x_i = 0$, hence $\vec{x} = \vec{0}$. Thus, $\norm{\vec{x}}_1 \geq 0$ for all $\vec{x} \in \R^n$ and $\norm{\vec{x}}_1 = 0 \iff \vec{x} = \vec{0}$, so $\norm{\cdot}_1$ is positive definite.
+
+\underbar{Homogeneity:} Let $\vec{x} \in \R^n$ and $c \in \R$. Then,
+\begin{align*}
+    \norm{c\vec{x}}_1
+    &= (|cx_1|^1 + \cdots + |cx_n|^1)^{1/1} &\\
+    &= |cx_1| + \cdots + |cx_n| &\\
+    &= |c||x_1| + \cdots + |c||x_n| &\\
+    &= |c|(|x_1| + \cdots + |x_n|) &\\
+    &= |c|\norm{\vec{x}}_1
+\end{align*}
+Thus, $\norm{\cdot}_1$ is homogeneous.
+
+\underbar{Triangle Inequality:} Let $\vec{x}, \vec{y} \in \R^n$. Then,
+\begin{align*}
+    \norm{\vec{x} + \vec{y}}_1
+    &= |x_1 + y_1| + \cdots + |x_n + y_n| &\\
+    &\leq |x_1| + |y_1| + \cdots + |x_n| + |y_n| &&\text{(By Triangle Inequality for Absolute Value)} &&\\
+    &= |x_1| + \cdots + |x_n| + |y_1| + \cdots + |y_n| &\\
+    &= \norm{\vec{x}}_1 + \norm{\vec{y}}_1
+\end{align*}
+Hence, $\norm{\cdot}_1$ has triangle inequality property.
+
+Therefore, $\norm{\cdot}_1$ is a norm.
+
+Now, we handle the $p > 1$ case. For this, we will use the Magic Norm Theorem. Consider the set $B = \{\vec{x} \in \R^n: \norm{\vec{x}}_p \leq 1\}$. Next, we show that $B$ is absorbing, balanced, bounded, closed, and convex.
+
+\underbar{Absorbing:} Let $\vec{x} \in \R^n$. If $\vec{x} = \vec{0}$, then $\norm{\vec{x}}_p = \left(|0|^p + \cdots + |0|^p\right)^{1/p} = 0 \leq 1$, so $\vec{x} \in B$. Thus, we take $t = 1 > 0$ and $\vec{b} = \vec{x} \in B$, and we write $\vec{x} = 1\vec{x} = t\vec{b}$. Now, we assume $\vec{x} \neq \vec{0}$. This means that for some $i$, $x_i \neq 0$, so $|x_i|^p > 0 \implies |x_1|^p + \cdots + |x_n|^p > 0 \implies (|x_1|^p + \cdots + |x_n|^p)^{1/p} > 0 \implies \norm{\vec{x}}_p > 0$. Now, we take $t = \norm{\vec{x}}_p > 0$ and $\vec{b} = \frac{1}{\norm{\vec{x}}_p}\vec{x}$. Notice that
+\begin{align*}
+    \|\vec{b}\|_p 
+    &= \norm{\frac{1}{\norm{\vec{x}}_p}\vec{x}}_p &\\
+    &= \left(\left|\frac{1}{\norm{\vec{x}}_p}x_1\right|^p + \cdots + \left|\frac{1}{\norm{\vec{x}}_p}x_n\right|^p\right)^{1/p} &\\
+    &= \left(\left(\frac{1}{\norm{\vec{x}}_p}\right)^p|x_1|^p + \cdots + \left(\frac{1}{\norm{\vec{x}}_p}\right)^p|x_n|^p\right)^{1/p} &\\
+    &= \frac{1}{\norm{\vec{x}}_p}\left(|x_1|^p + \cdots + |x_n|^p\right)^{1/p} &\\
+    &= \frac{1}{\norm{\vec{x}}_p}\norm{\vec{x}}_p &\\
+    &= 1
+\end{align*}
+Since $\|\vec{b}\|_p = 1 \leq 1$, $\vec{b} \in B$. Now, notice that $\vec{x} = \norm{\vec{x}}_p \cdot \frac{1}{\norm{\vec{x}}_p}\vec{x} = t\vec{b}$. In both cases, we get $\vec{x} = t\vec{b}$ for some $t > 0$ and $\vec{b} \in B$, hence, $B$ is absorbing.
+
+\underbar{Balanced:} Let $\vec{b} \in B$ and $t \in [-1, 1]$. Then, $\|\vec{b}\|_p \leq 1$ and $|t| \leq 1$. Now, we get
+\begin{align*}
+    \|t\vec{b}\|_p
+    &= (|tb_1|^p + \cdots + |tb_n|^p)^{1/p} &\\
+    &= (|t|^p|b_1|^p + \cdots + |t|^p|b_n|^p)^{1/p} &\\
+    &= |t|(|b_1|^p + \cdots + |b_n|^p)^{1/p} &\\
+    &= |t|\|\vec{b}\|_p &\\
+    &\leq 1
+\end{align*}
+Thus, $\|t\vec{b}\|_p \leq 1$, so $t\vec{b} \in B$. Hence, $B$ is balanced.
+
+\underbar{Bounded:} We will show that $B$ is bounded over the 1-norm, which by equivalence of norms, would mean that $B$ is bounded over all norms. Let $\vec{x}, \vec{y} \in B$. Notice that for any $1 \leq i \leq n$, $|x_i|^p \leq |x_1|^p + \cdots + |x_n|^p \implies |x_i| \leq (|x_1|^p + \cdots + |x_n|^p)^{1/p} = \norm{\vec{x}}_p \leq 1$. Similarly, $|y_i| \leq 1$ for any $1 \leq i \leq n$. Thus, $\norm{\vec{x}}_1 = |x_1| + \cdots + |x_n| \leq n$ and $\norm{\vec{y}}_1 = |y_1| + \cdots + |y_n| \leq n$. Now, we have $\norm{\vec{x} - \vec{y}}_1 \leq \norm{\vec{x}}_1 + \norm{\vec{y}}_1 \leq 2n$. This means that distances between elements of $B$ are bounded above by a constant $2n$, hence $B$ must be bounded.
+
+\underbar{Closed:} We will show that $B$ is closed over the 1-norm, which by equivalence of norms, would mean that $B$ is closed over all norms. To do so, we will show that $\norm{\cdot}_p: (\R^n, \norm{\cdot}_1) \to (\R, |\cdot|)$ is continuous, and then apply topological continuity.
+
+Define $f_a: ([0, \infty), |\cdot|) \to ([0, \infty), |\cdot|)$, $f_a(t) = t^a$, $g: (\R, |\cdot|) \to ([0, \infty), |\cdot|)$, $g = |\cdot|$, and $h_i: (\R^n, \norm{\cdot}_1) \to (\R, |\cdot|)$, $h_i(\vec{x}) = x_i$ for $1 \leq i \leq n$. Then, notice that we can write the following:
+\[
+    \norm{\cdot}_p = f_{1/p} \circ (f_p \circ g \circ h_1 + \cdots + f_p \circ g \circ h_n)
+\]
+Notice that $g$ is continuous, and for $p > 1$, $f_{1/p}$ and $f_p$ are continuous. Furthermore, $h_i$'s are linear functions with finite dimensional domain, hence are also continuous. Thus, $\norm{\cdot}_p$ is continuous as a combination of continuous functions. Now, $B = \{\vec{x} \in \R^n: \norm{\vec{x}}_p \leq 1\} = \norm{(-\infty, 1]}_p^{-1}$ is the pre-image of a closed set, so $B$ must also be closed by topological continuity.
+
+\underbar{Convex:} Let $\vec{x}, \vec{y} \in B$. Define the function $f: \R \to \R$, 
+\[
+f(t) = (\norm{t\vec{x} + (1 - t)\vec{y}}_p)^p = |(x_1 - y_1)t + y_1|^p + \cdots + |(x_n - y_n)t + y_n|^p
+\]
+Notice that $t\vec{x} + (1 - t)\vec{y} \in B$ if and only if $f(t) \leq 1$, so if we show that $f(t) \leq 1$ for all $t \in [0, 1]$, we will have that $B$ is convex.
+
+We first show that $f$ satisfies the conditions of Lemma \ref{mainlemma}. Define the functions $g_i: \R \to \R, g_i(t) = |(x_i - y_i)t + y_i|^p$ for $1 \leq i \leq n$. Notice that if $x_i - y_i = 0$, then $g_i$ is constant, so it is twice differentiable with $g_i''(t) = 0 \geq 0$. Otherwise, take $a = |x_i - y_i| > 0$ and $b = y_i$ if $x_i - y_i > 0$ and $b = -y_i$ otherwise. Notice that $g_i(t) = |(x_i - y_i)t + y_i|^p = |at + b|^p$ for all $t \in \R$. (Trust me bro) 
+
+On the interval $(-\infty, \frac{-b}{a})$, we have $g_i(t) = (-at - b)^p$ which is differentiable with a continuous derivative of $g_i'(t) = -pa(-at - b)^{p - 1} = -pa|at + b|^{p - 1}$. Furthermore, $g_i$ is twice differentiable on this interval with with $g_i''(t) = p(p - 1)(-a)^2(-at - b)^{p - 2} = p(p - 1)a^2|at + b|^{p - 2} \geq 0$ since $p > 1$. 
+
+Similarly, on the interval $(\frac{-b}{a}, \infty)$, $g_i(t) = (at + b)^p$ which is continuously differentiable with $g_i'(t) = pa(at + b)^{p - 1} = pa|at + b|^{p - 1}$. Furthermore, $g_i''(t) = p(p - 1)a^2(at + b)^{p - 2} = p(p - 1)a^2|at + b|^{p - 2} \geq 0$.
+
+Now, notice that \[
+    \frac{-(at + b)^p}{t + \frac{b}{a}} \leq \frac{|at + b|^p}{t + \frac{b}{a}} \leq \frac{(at + b)^p}{t + \frac{b}{a}}
+\]
+and that for $p > 1$, both the left and the right terms go to 0 as $t \to -\frac{b}{a}$. By the Squeeze Theorem, this means that
+\[
+    g_i'\left(-\frac{b}{a}\right) = \lim_{t \to -\frac{b}{a}} \frac{|at + b|^p}{t + \frac{b}{a}} = 0
+\]
+Furthermore, notice that as $t \to \left(-\frac{b}{a}\right)^-$, $g_i'(t) = -pa|at + b|^{p - 1} \to 0$ and as $t \to \left(-\frac{b}{a}\right)^+$, $g_i'(t) = pa|at + b|^{p - 1} \to 0$. Thus, $g_i'(t)$ is continuously differentiable.
+
+Now, we have that $g_i$ is continuously differentiable on $\R$ and twice differentiable on all $\R$ except, possibly, for a single point. Furthermore, for all $t \in \R$ where $g_i$ is twice differentiable, $g_i''(t) \geq 0$. Also, as $t \to -\infty$, $g_i'(t) = -pa|at + b|^{p - 1} \to -\infty$, and as $t \to \infty$, $g'(t) = pa|at + b|^{p - 1} \to \infty$.
+
+Now, notice that $f = g_1 + g_2 + \cdots + g_n$. Since each $g_i$ is continuously differentiable, $f$ is also continuously differentiable. Since each $g_i$ is twice differentiable on all $\R$ but a single point, $f$ is twice differentiable on all $\R$ but finitely many points. Since where all $g_i$'s exist, $g_i''(t) \geq 0$, we also have $f''(t) = g_1''(t) + \cdots + g_n''(t) \geq 0$ as a sum of non-negative terms. Finally, since $\lim_{t \to -\infty}g_i(t) = -\infty$ and $\lim_{t \to \infty}g_i(t) = \infty$ for all $i$, we also have $\lim_{t \to -\infty} f(t) = -\infty$ and $\lim_{t \to \infty} f(t) = \infty$. This allows us to apply Lemma \ref{mainlemma} to get some $t_0 \in \R$ so that $f$ is non-increasing on $(-\infty, t_0]$ and non-decreasing on $[t_0, \infty)$.\\
+
+Next, we show that the maximum of $f$ on $[0, 1]$ is either $f(0)$ or $f(1)$. Consider the cases $t_0 \leq 0$, $0 < t_0 < 1$, and $1 \leq t_0$.
+
+\textit{Case 1:} $t_0 \leq 0$. In this case, we have that $f$ is non-decreasing on $[0, 1] \subseteq [t_0, \infty)$. This means that $f(1) \geq f(t)$ for all $t \in [0, 1]$, so $f(1)$ is the maximum of $f$ on $[0, 1]$.
+
+\textit{Case 2:} $t_0 \geq 1$. In this case, we have that $f$ is non-increasing on $[0, 1] \subseteq (-\infty, t_0]$. This means that $f(0) \geq f(t)$ for all $t \in [0, 1]$, so $f(0)$ is the maximum of $f$ on $[0, 1]$.
+
+\textit{Case 3:} $0 < t_0 < 1$. In this case, we have that $f$ is non-increasing on $[0, t_0] \subseteq (-\infty, t_0]$ and non-decreasing on $[t_0, 1] \subseteq [t_0, \infty)$. This means that $f(0) \geq f(t)$ for all $t \in [0, t_0]$ and $f(1) \geq f(t)$ for all $t \in [t_0, 1]$. This implies that $\max\{f(0), f(1)\} \geq f(t)$ for all $t \in [0, 1]$, hence either $f(0)$ or $f(1)$ is the maximum of $f$ on $[0, 1]$.
+
+Now, we have that for all $t \in [0, 1]$, \[
+f(t) \leq \max\{f(0), f(1)\} = \max\{(\norm{\vec{y}}_p)^p, (\norm{\vec{x}}_p)^p\} \leq 1
+\]
+since $\norm{\vec{x}}_p, \norm{\vec{y}}_p \leq 1$ as $\vec{x}, \vec{y} \in B$. As was mentioned previously, this means that $t\vec{x} + (1 - t)\vec{y} \in B$, hence $B$ is convex.\\
+
+We have shown that $B$ is absorbing, balanced, convex, bounded, and closed, so by the Magic Norm Theorem, there exists a norm $\norm{\cdot}: \R^n \to \R$ so that $B = \{\vec{x} \in \R^n: \norm{\vec{x}} \leq 1\}$. We soon show that $\norm{\cdot}_p = \norm{\cdot}$, but before that, it is helpful to show that $\norm{\cdot}_p$ is homogeneous.
+
+Let $c \in \R$ and $\vec{x} \in \R^n$. Then, we have
+\begin{align*}
+    \norm{c\vec{x}}_p
+    &= (|cx_1|^p + \cdots + |cx_n|^p)^{1/p} &\\
+    &= (|c|^p|x_1|^p + \cdots + |c|^p|x_n|^p)^{1/p} &\\
+    &= |c|(|x_1|^p + \cdots + |x_n|^p)^{1/p} &\\
+    &= |c|\norm{\vec{x}}_p
+\end{align*}
+Hence, $\norm{\cdot}_p$ is homogeneous.
+
+Now, by way of contradiction, suppose that $\norm{\cdot}_p \neq \norm{\cdot}$. Then, there exists some $\vec{x} \in \R$ so that $\norm{\vec{x}}_p \neq \norm{\vec{x}}$. Notice that $\vec{x} \neq \vec{0}$, because if that was the case, we would have $\norm{\vec{x}} = 0 = \norm{\vec{x}}_p$. Then, we can take $c = \frac{1}{\norm{\vec{x}}} > 0$ and get
+\[
+    \norm{c\vec{x}} = |c|\norm{\vec{x}} = \frac{1}{\norm{\vec{x}}}\norm{\vec{x}} = 1
+\]
+which means that $c\vec{x} \in B$. Since $c\vec{x} \in B$, we must have $\norm{c\vec{x}}_p \leq 1$. Now, notice that if $\norm{c\vec{x}}_p = 1$, then $\norm{c\vec{x}}_p = \norm{c\vec{x}} \implies |c|\norm{\vec{x}}_p = |c|\norm{\vec{x}} \implies \norm{\vec{x}}_p = \norm{\vec{x}}$, but that is a contradiction. Hence, $\norm{c\vec{x}}_p < 1$. Furthermore, since $\vec{x} \neq \vec{0}$ and $c \neq 0$, we have $\norm{c\vec{x}}_p > 0$, so we take $t = \frac{1}{\norm{c\vec{x}}_p}$. Since $0 < \norm{c\vec{x}}_p < 1$, we have $t > 1$. Now, we have 
+\[
+\norm{tc\vec{x}}_p = t\norm{c\vec{x}}_p = \frac{1}{\norm{c\vec{x}}_p}\norm{c\vec{x}}_p = 1
+\]
+so $tc\vec{x} \in B$. However, we also have
+\[
+    \norm{tc\vec{x}} = t\norm{c\vec{x}} = t > 1
+\]
+so $tc\vec{x} \notin B$, which is a contradiction. Therefore, $\norm{\cdot}_p = \norm{\cdot}$, so $\norm{\cdot}_p$ is a norm.
+
+\end{proof}
+
+\section{Applications}
+
+The $p$-norm theorem is not widely applicable, but it can be used to prove the $p$-norms on $C[0, 1]$ and $l^p$, the spaces of continuous functions on $[0, 1]$ and $p$-summable sequences in $\R$, respectively.
+
+\begin{defn}[$p$-Summable Sequences]
+    We define $l^p$ to be the space of $p$-summable sequences in $\R$ -- that is, $l^p$ is the space of all sequences $(x_n)$ in $\R$ so that $\sum_{i = 1}^\infty |x_n|^p$ converges. You can verify that this is a linear subspace of the space of all sequences in $\R$.
+\end{defn}
+
+\begin{cor}[$p$-Norm on $l^p$]
+     For $p > 1$, the function $\norm{\cdot}_p: l^p \to \R$, $\norm{\vec{x}}_p = \left(\sum_{i = 1}^\infty |x_n|^p\right)^{1/p}$ is a norm.
+\end{cor}
+
+\begin{proof}
+To prove that $\norm{\cdot}_p$ is a norm on $l^p$, we need to show that it is positive definite, homogeneous, and has triangle inequality. Also, where needed, we will use the fact that $\norm{\cdot}_p$ on $\R_n$ is a norm.
+
+\underbar{Positive Definiteness:} Let $X = (x_n) \in l^p$. Notice that
+\[
+    \norm{X}_p = \left(\sum_{i = 1}^\infty |x_i|^p\right)^{1/p}
+\]
+is a sum of non-negative terms, so $\norm{X}_p \geq 0$. Thus, we have $\norm{X}_p \geq 0$ for all $X \in l^p$.
+
+Notice that $\norm{0}_p = \left(\sum_{i = 1}^\infty |0|^p\right)^{1/p} = 0$. Now, assume that $\norm{X}_p = 0$ for some $X = (x_n) \in l^p$. Then, notice that $0 = \left(\sum_{i = 1}^\infty |x_i|^p\right)^{1/p} \geq |x_n|$ for all $n \in \N$. This means that $x_n = 0$ for all $n \in \N$, hence $X = 0$. Thus, we have $\norm{X}_p = 0 \iff X = 0$. Therefore, $\norm{\cdot}_p$ is positive definite.
+
+\underbar{Homogeneity:} Let $c \in \R$ and $X = (x_n) \in l^p$. Then, we have
+\begin{align*}
+    \norm{cX}_p
+    &= \left(\sum_{i = 1}^\infty |cx_i|^p\right)^{1/p} &\\
+    &= \left(|c|^p\sum_{i = 1}^\infty |x_i|^p\right)^{1/p} &\\
+    &= |c|\left(\sum_{i = 1}^\infty |x_i|^p\right)^{1/p} &\\
+    &= |c|\norm{X}_p
+\end{align*}
+Thus, $\norm{\cdot}_p$ is homogeneous.
+
+\underbar{Triangle Inequality:} Let $X = (x_n), Y = (y_n) \in l^p$. Furthermore, we define $\vec{x}_n = (x_1, \dots, x_n), \vec{y}_n = (y_1, \dots, y_n) \in \R^n$ for $n \geq 2$. By Theorem \ref{PNormTheorem}, for all $n \geq 2$, we have
+\[
+    \norm{\vec{x}_n + \vec{y}_n}_p \leq \norm{\vec{x}_n}_p + \norm{\vec{y}_n}_p \longimplies \left(\sum_{i = 1}^n |x_i + y_i|^p\right)^{1/p} \leq \left(\sum_{i = 1}^n |x_i|^p\right)^{1/p} + \left(\sum_{i = 1}^n |y_i|^p\right)^{1/p}
+\]
+Taking $n \to \infty$, we get
+\[
+    \left(\sum_{i = 1}^\infty |x_i + y_i|^p\right)^{1/p} \leq \left(\sum_{i = 1}^\infty |x_i|^p\right)^{1/p} + \left(\sum_{i = 1}^\infty |y_i|^p\right)^{1/p} \longimplies \norm{X + Y}_p \leq \norm{X}_p + \norm{Y}_p
+\]
+Thus, $\norm{\cdot}_p$ has triangle inequality. Therefore, $\norm{\cdot}_p: l^p \to \R$ is a norm.
+
+\end{proof}
+
+\begin{cor}[{$p$-Norm on $C[0, 1]$}]
+     For $p > 1$, the function $\norm{\cdot}_p: C[0, 1] \to \R$,\\ $\norm{f}_p = \left(\int_0^1 |f(x)|^p\,dx\right)^{1/p}$ is a norm. Note that this integral exists since continuous functions are integrable.
+\end{cor}
+
+\begin{proof}
+To prove that $\norm{\cdot}_p$ is a norm on $C[0, 1]$, we need to show that it is positive definite, homogeneous, and has triangle inequality. Also, where needed, we will use the fact that $\norm{\cdot}_p$ on $\R_n$ is a norm.
+
+\underbar{Positive Definiteness:} Let $f \in C[0, 1]$. Notice that
+\[
+    \norm{f}_p = \left(\int_0^1 |f(x)|^p \,dx \right)^{1/p}
+\]
+is an integral of a non-negative function, so $\norm{f}_p \geq 0$. Thus, we have $\norm{f}_p \geq 0$ for all $f \in C[0, 1]$.
+
+Notice that $\norm{0}_p = \left(\int_0^1 0 \,dx \right)^{1/p} = 0$. Now, let $f \neq 0 \in C[0, 1]$. That means that for some $x_0 \in [0, 1]$, $f(x_0) \neq 0$. Then, $|f(x_0)| > 0$, so we can find an $\varepsilon > 0$ such that for all $x \in [0, 1] \cap (x_0 - \varepsilon, x_0 + \varepsilon)$, $|f(x)| > \frac{1}{2}|f(x_0)|$. Now, we have
+\begin{align*}
+    \norm{f}_p
+    &= \left(\int_0^1 |f(x)|^p \,dx \right)^{1/p} &\\
+    &= \left(\int_0^{\max\{0, x_0 - \varepsilon\}} |f(x)|^p \,dx + \int_{\max\{0, x_0 - \varepsilon \}}^{\min\{x_0 + \varepsilon, 1\}} |f(x)|^p \,dx + \int_{\min\{x_0 + \varepsilon, 1\}}^1 |f(x)|^p \,dx \right)^{1/p} &\\
+    &> \left(\int_0^{\max\{0, x_0 - \varepsilon\}} 0 \,dx + \int_{\max\{0, x_0 - \varepsilon \}}^{\min\{x_0 + \varepsilon, 1\}} \left(\frac{1}{2}|f(x_0)|\right)^p \,dx + \int_{\min\{x_0 + \varepsilon, 1\}}^1 0 \,dx \right)^{1/p} &\\
+    &=\left(\frac{1}{2^p}|f(x_0)|^p\left(\min\{x_0 + \varepsilon, 1\} - \max\{0, x_0 - \varepsilon \}\right) \right)^{1/p} &\\
+    &=\frac{1}{2}|f(x_0)|\left(\min\{x_0 + \varepsilon, 1\} + \min\{0, \varepsilon - x_0 \}\right)^{1/p} &\\
+    &=\frac{1}{2}|f(x_0)|\left(\min\{2\varepsilon, 1, 1 + \varepsilon - x_0 \}\right)^{1/p} &\\
+    &>\frac{1}{2}|f(x_0)|\cdot\varepsilon^{1/p} &\\
+    &> 0
+\end{align*}
+Thus, $\norm{f}_p \neq 0$. Now, we have $f = 0 \implies \norm{f}_p = 0$ and $f \neq 0 \implies \norm{f}_p \neq 0$. Hence, $\norm{\cdot}_p$ is positive definite.
+
+\underbar{Homogeneity:} Let $c \in \R$ and $f \in C[0, 1]$. Then, we have
+\begin{align*}
+    \norm{cf}_p
+    &= \left(\int_0^1 |cf(x)|^p \,dx \right)^{1/p} &\\
+    &= \left(|c|^p\int_0^1 |f(x)|^p \,dx \right)^{1/p} &\\
+    &= |c|\left(\int_0^1 |f(x)|^p \,dx \right)^{1/p} &\\
+    &= |c|\norm{f}_p
+\end{align*}
+Thus, $\norm{\cdot}_p$ is homogeneous.
+
+\underbar{Triangle Inequality:} Let $f, g \in C[0, 1]$. Furthermore, we define $\vec{x}_n = (f(\frac{1}{n}), f(\frac{2}{n}), \dots, f(\frac{n}{n})), \vec{y}_n = (g(\frac{1}{n}), g(\frac{2}{n}), \dots, g(\frac{n}{n})) \in \R^n$ for $n \geq 2$. By Theorem \ref{PNormTheorem}, for all $n \geq 2$, we have
+\[
+    \norm{\vec{x}_n + \vec{y}_n}_p \leq \norm{\vec{x}_n}_p + \norm{\vec{y}_n}_p
+\]
+\[
+\longimplies \left(\sum_{i = 1}^n \left|f\left(\frac{i}{n}\right) + g\left(\frac{i}{n}\right)\right|^p\right)^{1/p} \leq \left(\sum_{i = 1}^n \left|f\left(\frac{i}{n}\right)\right|^p\right)^{1/p} + \left(\sum_{i = 1}^n \left|g\left(\frac{i}{n}\right)\right|^p\right)^{1/p}
+\]
+\[
+\longimplies \left(\sum_{i = 1}^n \frac{1}{n}\left|f\left(\frac{i}{n}\right) + g\left(\frac{i}{n}\right)\right|^p\right)^{1/p} \leq \left(\sum_{i = 1}^n \frac{1}{n}\left|f\left(\frac{i}{n}\right)\right|^p\right)^{1/p} + \left(\sum_{i = 1}^n \frac{1}{n}\left|g\left(\frac{i}{n}\right)\right|^p\right)^{1/p}
+\]
+Now, notice that for a continuous function $h: [0, 1] \to \R$, the integral of $h$ on $[0, 1]$ can be written as a limit of the Riemann sums. Written using the right rule, we get
+\[
+    \int_0^1 h(x) \,dx = \lim_{n \to \infty}\sum_{i = 1}^n \frac{1}{n} h\left(\frac{i}{n}\right)
+\]
+Taking $n \to \infty$ on the previous inequality, we get
+\[
+    \left(\lim_{n \to \infty}\sum_{i = 1}^n \frac{1}{n}\left|f\left(\frac{i}{n}\right) + g\left(\frac{i}{n}\right)\right|^p\right)^{1/p} \leq \left(\lim_{n \to \infty}\sum_{i = 1}^n \frac{1}{n}\left|f\left(\frac{i}{n}\right)\right|^p\right)^{1/p} + \left(\lim_{n \to \infty}\sum_{i = 1}^n \frac{1}{n}\left|g\left(\frac{i}{n}\right)\right|^p\right)^{1/p}
+\]
+\[
+\longimplies \left(\int_0^1 |f(x) + g(x)|^p\right)^{1/p} \leq \left(\int_0^1 |f(x)|^p\right)^{1/p} + \left(\int_0^1|g(x)|^p\right)^{1/p}
+\]
+\[
+\longimplies \norm{f + g}_p \leq \norm{f}_p + \norm{g}_p
+\]
+Thus, $\norm{\cdot}_p$ has triangle inequality. Therefore, $\norm{\cdot}_p: C[0, 1] \to \R$ is a norm.
+
+\end{proof}
+
+
+\end{document}
