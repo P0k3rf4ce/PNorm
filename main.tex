@@ -1,27 +1,41 @@
 \documentclass{article}
 \usepackage[margin=1.2in]{geometry} % margins
-\usepackage{calrsfs}
+%\usepackage{calrsfs}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
-%\usepackage{parskip}
+\usepackage{parskip}
 \usepackage{graphicx}
 \usepackage{enumerate}
 \usepackage{enumitem}
+\usepackage{amsthm}
+\usepackage{float}
 
 \renewcommand{\implies}{\Rightarrow}
 \newcommand{\longimplies}{\Longrightarrow}
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
 \newcommand{\R}{\mathbb{R}}
+\renewcommand{\H}{\mathbb{H}}
 \newcommand{\F}{\mathbb{F}}
 \newcommand{\cl}[1]{\overline{#1}}
+\newcommand{\bdr}{\partial}
 \renewcommand{\emptyset}{\varnothing}
 \newcommand{\norm}[1]{\left\|#1\right\|}
 \newcommand{\maxnorm}[1]{\left\|#1\right\|_{\text{max}}}
 \newcommand{\opnorm}[1]{\left\|#1\right\|_{\mathrm{op}}}
+\newcommand{\id}{\operatorname{id}}
+\newcommand{\sspan}{\operatorname{span}}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\vol}{\mathrm{vol}}
+\newcommand{\atl}[1]{\mathcal{#1}}
+\newcommand{\str}[1]{\cl{\atl{#1}}}
 
 \newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+
+
+
 
 % Theorem environments
 \usepackage{amsthm}
@@ -57,471 +71,435 @@
     {}
     [.]
 
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
 \begin{document}
 
 \begin{center}
-    {\Large \textbf{$p$-Norm is a Norm}}
+    {\Large \textbf{Manifolds with Boundary}}
 
     \medskip
     {\large T. Sompura}
 \end{center}
 
 \begin{abstract}
-    We show that the $p$-norm in $\R^n$ is indeed a norm. We state and prove the ``magic norm" theorem, and we analyse a certain type of a single variable function to help prove that $p$-norm is a norm. Then, we apply our $p$-norm theorem on $\R^n$ to prove the $p$-norms on the spaces of sequences and continuous functions.
+    We introduce the notion of a locally Euclidean space with boundary, and then extend this notion to define manifolds with boundary. We define the interior and boundary of such a space, and investigate its dimension. Finally, we explore some examples of manifolds with boundary.
 \end{abstract}
 
 \section{Introduction}
 
-When working with the real normed vector space $\R^n$, we commonly use the Euclidean norm or the 2-norm, $\|\vec{x}\|_2 = \sqrt{x_1^2 + x_2^2 + \cdots + x_n^2}$, as it is how distance is measured in the real world. Less commonly we use the taxicab norm or 1-norm, $\|\vec{x}\|_1 = |x_1| + |x_2| + \cdots + |x_n|$, and the max-norm, $\maxnorm{\vec{x}} = \max(|x_1|, |x_2|, \dots, |x_n|)$ which are generally simpler to work with. We generalize the 1-norm and the 2-norm to the $p$-norm with $p > 0$:
-\[
-    \|\vec{x}\|_p = \left(|x_1|^p + |x_2|^p + \cdots + |x_n|^p\right)^{1/p}
-\]
-It is fairly simple to prove positive definiteness and homogeneity for the $p$-norm, however, proving the triangle inequality is difficult. In this paper, we prove the following theorem:
-\begin{thm}[$p$-Norm on $\R^n$]
-    \label{PNormTheorem}
-    For $n \geq 2$, the function $\|\cdot\|_p: \R^n \to \R,\\ \|\vec{x}\|_p = \left(|x_1|^p + |x_2|^p + \cdots + |x_n|^p\right)^{1/p}$ is a norm if and only if $p \geq 1$.
-\end{thm}
-Theorem 1.1 is proven using the magic norm theorem and some lemmas about differentiable single variable functions with non-decreasing derivative. The magic norm theorem is proven in \textsection\ref{MagicNormSection}. The lemmas for functions with non-decreasing derivatives are proven in \textsection\ref{FunctionLemmasSection}. Theorem \ref{PNormTheorem} is proven in \textsection\ref{PNormSection}.
+When we first learned about locally Euclidean spaces, one of the problems was whether the closed half space, $\R \times [0, \infty)$ was locally Euclidean. It is, in fact, not locally Euclidean, and we can show it using Invariance of Domain (\ref{invdom}) and Ray's Conjecture (\ref{rayconj}):
 
-\section{Magic Norm Theorem}\label{MagicNormSection}
+\begin{prop}
+    $\R \times [0, \infty)$ is not locally Euclidean.
+\end{prop}
+\begin{proof}
+We first consider show that it is not locally Euclidean of dimension 2, and then of any other dimension.
 
-In this section, we state and prove the Magic Norm Theorem. Given a subset on a normed vector space with certain properties, the Magic Norm Theorem proves the existence of a norm on this vector space such that the given subset is the closed unit ball.
+By way of contradiction, suppose $\R \times [0, \infty)$ is locally Euclidean of dimension 2. Then, we must have a homeomorphism $\Phi: U \to V$, where $U$ is an open neighbourhood of $(0, 0)$ in $\R \times [0, \infty)$ and $V$ is open in $\R^2$. Clearly $U$ is not open in $\R^n$, since every open ball around $(0, 0)$ would have a negative $y$-coordinate. However, by Invariance of Domain, we must have that $U = \Phi^{-1}(V)$ is open, reaching a contradiction.
 
-We first define three properties on subsets of a real normed vector space $(X, \|\cdot\|)$.
+Now, suppose that $\R \times [0, \infty)$ is locally Euclidean of some dimension $m \neq 2$. Then we have a homeomorphism $\Phi: U \to V$, where $U$ is an open neighbourhood of $(0, 1)$ in $\R \times [0, \infty)$ and $V$ is open in $\R^m$. In case that $U$ is not open in $\R^2$, we take $U_0 \subseteq U$ to be a small enough open ball around $(0, 1)$ such that it is open in $\R^2$. Also, the image $V_0 := \Phi(U_0)$ is the preimage of an open set $(\Phi^{-1})^{-1}(U_0)$, which is also open. This means that the map $\Phi_0: U_0 \to V_0, \Phi_0 = \Phi|_{U_0}$ is a homeomorphism between an open set in $\R^2$ and an open set in $\R^m$. Since $m \neq 2$, by Ray's Conjecture, we get a contradiction.
 
-\begin{defn}[Absorbing]
-    \label{absorbing}
-    $B \subseteq X$ is absorbing if and only if for all $\vec{x} \in X$ there exists $t > 0$ so that $\vec{x} = t\vec{b}$ for some $\vec{b} \in B$.
+Therefore, the closed half space $\R \times [0, \infty)$ is not locally Euclidean.
+\end{proof}
+
+Because of this, everything we know about manifolds cannot be used on the closed half space. In fact, by similar methods, we can show that shapes like closed balls, solid tori, solid cubes, are all not locally Euclidean, which is quite a problem when we try to talk about volume and surface area.
+
+This is paper is dedicated towards defining a generalization for the closed half space, just like a locally Euclidean space attempts to generalize $\R^n$. We will define a notion of a \textit{locally Euclidean space with boundary}, as we will concretely define interior and boundary of such a space. We will discover an intuitive relationship between the dimensions of interior and boundary. We then extend the notion to a manifold with boundary using transition maps, and, finally, we explore some basic and one more involved examples of manifolds with boundary.
+
+Also, as a side node, throughout this paper, we will ignore the case of the empty metric space, since it is not very interesting, yet is very pathological (for example, it is locally Euclidean of \textit{any} dimension).
+
+\section{Locally Euclidean Spaces With Boundary}
+
+In this section, we generalize the closed half space by a locally Euclidean space with boundary, just like a locally Euclidean space generalizes $\R^n$.
+
+\begin{defn}
+    For $n\geq 1$, the \textbf{closed half space} in $\R^n$ is defined to be the set of points whose $n$th coordinate is nonnegative:
+        \[ \H^n := \{(x_1,\ldots,x_n) \in \R^n : x_n\geq 0\}. \]
+    Likewise, the \textbf{open half space} consists of those points whose $n$th coordinate is strictly positive:
+        \[ (\H^n)_{\mathrm{open}} := \{(x_1,\ldots,x_n) \in \R^n : x_n> 0\}. \]
+    Let $X$ be a metric space. We say that $X$ is \textbf{locally-Euclidean-with-boundary of dimension $n$} if every point $p\in X$ has an open neighborhood $U$ such that $U$ is homeomorphic to a relatively open subset $\widehat{U}$ of $\H^n$. If $\Phi:U\rightarrow \widehat{U}$ is such a homeomorphism, then the pair $(U,\Phi)$ is called a \textbf{chart} at $p$. Similarly to locally Euclidean spaces, this definition is equivalent to having a \textbf{chart cover} of $X$.
 \end{defn}
 
-\begin{defn}[Balanced]
-    \label{balanced}
-    $B \subseteq X$ is balanced if and only if for all $\vec{b} \in B$, we have $t\vec{b} \in B$ for all $t \in [-1, 1]$.
+\begin{defn}[Interior]
+    Let $X$ be locally-Euclidean-with-boundary of dimension $n$. We say that $p \in X$ is an \textbf{interior point} of $X$ if there exists a chart $(U, \Phi)$ containing $p$ such that $\Phi(U)$ is open in $\R^n$. We then define the \textbf{interior of $X$} to be the set $X^\circ$ containing all interior points of $X$.
 \end{defn}
 
-\begin{defn}[Convex]
-    \label{convex}
-    $B \subseteq X$ is convex if and only if for all $\vec{x}, \vec{y} \in B$, we have $t\vec{x} + (1 - t)\vec{y} \in B$ for all $t \in [0, 1]$.
+\begin{defn}[Boundary]
+    Let $X$ be locally-Euclidean-with-boundary of dimension $n$. Then, the \textbf{boundary} of $X$ is $\bdr X = X \setminus X^\circ$, and elements of $\bdr X$ are called \textbf{boundary points}\footnote{Note that $X^\circ$ and $\bdr X$ here are different from topological interior and boundary.}.
 \end{defn}
 
-Also, recall that in a finite dimensional normed vector space, all norms are equivalent. This means that if a set is closed and bounded over one norm, it must be closed and bounded over all norms.
+As you might expect, $\H^n$ is locally Euclidean with boundary.
 
-Now, we can state and prove the Magic Norm Theorem.
+\begin{example}[Closed Half Space]
+    \label{exclosedhalf}
+    The \textbf{closed half space} $\H^n$ is locally-Euclidean-with-boundary of dimension $n$, and $(\H^n)^\circ = (\H^n)_{\mathrm{open}}$ and $\bdr\H^n = \R^{n - 1} \times \{0\}$.
+\end{example}
+Although it is clear that $\H^n$ is locally-Euclidean-with-boundary of dimension $n$, proving its interior and boundary are as defined above is quite challenging. We will prove an alternative definition for boundary and interior points, and then come back to this example.
 
-\begin{thm}[Magic Norm Theorem]
-    \label{Magic Norm Theorem}
-    Let $X$ be a finite dimensional normed vector space, and let $B \subseteq X$. Then, there exists a norm $\|\cdot\|: X \to \R$ so that $B = \{\vec{x} \in X: \|\vec{x}\| \leq 1\}$ if and only if $B$ is absorbing, balanced, convex, closed, and bounded.
+\begin{thm}[Alternative Definition of Boundary Point]
+    \label{altdefbdr}
+    Let $X$ be locally-Euclidean-with-boundary of dimension $n$. Then, for all $p \in X$, the following three statements are equivalent:
+    \begin{enumerate}[label=\rm(\roman*)]
+        \item $p \in \bdr X$;
+        \item \textbf{for all} charts $(U, \Phi)$ containing $p$, we have $\Phi(p) \in \bdr\H^n$; \footnote{Note that at this point we haven't proven that the boundary of $\H^n$ is as in Example \ref{exclosedhalf}, so we are simply using $\bdr\H^n$ to denote the set $\R^{n - 1} \times \{0\}$. Same idea applies for $(\H^n)^\circ$.}
+        \item \textbf{there exists} a chart $(V, \Psi)$ containing $p$ such that $\Psi(p) \in \bdr\H^n$.
+    \end{enumerate}
 \end{thm}
 
 \begin{proof}
-We first prove the forward direction. Suppose there exists a norm $\|\cdot\|: X \to \R$ so that $B = \{\vec{x} \in X: \|\vec{x}\| \leq 1\}$. Next, we show that $B$ satisfies the 5 properties.
+We prove this by showing $(i) \implies (ii), (ii) \implies (iii)$, and $(iii) \implies (i)$.
 
-\underbar{Absorbing:} Let $\vec{X} \in X$. If $\vec{x} = \vec{0}$, then we take $\vec{b} = \vec{0}$ which is in $B$ since $\|\vec{0}\| = 0 \leq 1$. This means that $\vec{x} = \vec{0} = t\vec{b}$ for any $t > 0$. If $\vec{x} \neq \vec{0}$, we can take $\vec{b} = \frac{1}{\|\vec{x}\|}\vec{x}$ and $t = \|\vec{x}\| > 0$. We then get $t\vec{b} = \|\vec{x}\|\frac{1}{\|\vec{x}\|}\vec{x} = \vec{x}$. In both cases, we are able to write $\vec{x} = t\vec{b}$ for some $t > 0$ and $\vec{b} \in B$, hence, $B$ is absorbing.
+``$(i) \implies (ii)$". Let $p \in \bdr X$. Then, $p \notin X^\circ$, which means that for all charts $(U, \Phi)$ containing $p$, $\Phi(U)$ is not open in $\R^n$. Now, by way of contradiction, suppose that for an arbitrary chart $(U, \Phi)$ containing $p$, $\Phi(p) \notin \bdr \H^n$. Then, we have that $\Phi(p) \in (\H^n)^\circ$, which means that $\varepsilon := (\Phi(p))_n > 0$. We now take the open ball $B(\Phi(p), \varepsilon) \subseteq (\H^n)^\circ$, which is also open in $\R^n$, since $(\H^n)^\circ$ is an open set in $\R^n$. By making $\varepsilon$ smaller if necessary, we can also get $\widehat{V} := B(\Phi(p), \varepsilon) \subseteq (\H^n)^\circ \cap \widehat{U}$. We now define a new chart $(V, \Phi|_V)$ containing $p$, where $V = \Phi^{-1}(\widehat{V})$. This chart is well defined, since $V$ is open as a preimage of an open set, and $\Phi|_V: V \to \widehat{V}$ is a homeomorphism, since it is a restriction of a homeomorphism $\Phi$. With this chart, we get that $\Phi(V) = \widehat{V}$ is open in $\R^n$, which means that $p \in X^\circ$, which is a contradiction, since $p \in \bdr X = X \setminus X^\circ$. Hence, we must have $\Phi(p) \in \bdr \H^n$ for all charts $(U, \Phi)$ containing $p$.
 
-\underbar{Balanced:} Let $\vec{b} \in B$ and $t \in [-1, 1]$. Then, $\|\vec{b}\| \leq 1$ and $|t| \leq 1$, so
-\[
-    \|t\vec{b}\| = |t|\|\vec{b}\| \leq 1
-\]
-Thus, $t\vec{b} \in B$, and hence, $B$ is balanced.
+``$(ii) \implies (iii)$" is clearly true.
 
-\underbar{Convex:} Let $\vec{x}, \vec{y} \in B$ and $t \in [0, 1]$. Then, $\|x\|, \|y\| \leq 1$, $|t| = t$, and $|1 - t| = 1 - t$. Using the triangle inequality and homogeneity, we get
-\[
-    \|t\vec{x} + (1 - t)\vec{y}\| \leq \|t\vec{x}\| + \|(1 - t)\vec{y}\| = t\|\vec{x}\| + (1 - t)\|\vec{y}\| \leq t + 1 - t = 1
-\]
-Thus, $t\vec{x} + (1 - t)\vec{y} \in B$, and hence, $B$ is convex.
-
-\underbar{Closed:} We will show that $B$ is closed over $\|\cdot\|$. Let $\vec{x} \in \cl{B}$. Then, for all $\varepsilon > 0$, there exists $\vec{p}_\varepsilon \in B \cap B(\vec{x}, \varepsilon) \implies \|\vec{p}_\varepsilon\| \leq 1$ and $\|\vec{p}_\varepsilon - \vec{x}\| < \varepsilon$. Then, we get
-\[
-    \|\vec{x}\| \leq \|\vec{x} - \vec{p}_\varepsilon\| + \|\vec{p}_\varepsilon\| < 1 + \varepsilon
-\]
-Letting $\varepsilon \to 0$, we get $\|\vec{x}\| < 1 + \varepsilon \implies \|\vec{x}\| \leq 1 \implies \vec{x} \in B$. Thus, $B$ is closed.
-
-\underbar{Bounded:} Let $\vec{x}, \vec{y} \in B$. Then,
-\[
-    \|\vec{x} - \vec{y}\| \leq \|\vec{x}\| + \|\vec{y}\| \leq 2
-\]
-Thus, distances between points in $B$ are bounded, and hence, $B$ is bounded.\\
-
-Now, we prove the converse direction. Let $B$ be absorbing, balanced, convex, closed, and bounded. We define the function $N: X \to \R$, 
-\[
-N(\vec{x}) = \inf\left\{\frac{1}{t}: t > 0 \text{ and } t\vec{x} \in B\right\}
-\]
-Notice that this set is bounded below by 0. Furthermore, notice that since $B$ is absorbing, for any $\vec{x} \in X$, there exists $t > 0$ and $\vec{b} \in B$ so that $\vec{x} = t\vec{b} \implies \frac{1}{t}\vec{x} = \vec{b} \in B$. This means that $t$ is an element of the set used in the definition of $N$, hence that set is non-empty. Thus, the infimum exists for all $\vec{x} \in X$, and so $N$ is well-defined. Next, we show that $N$ is a norm.
-
-\underbar{Positive Definiteness:} Clearly, we have $N(\vec{x}) = \inf\{\frac{1}{t}: t > 0 \text{ and } t\vec{x} \in B\} \geq 0$ for all $\vec{x} \in X$ since the set only contains positive values. Also, $N(\vec{0}) = \inf\{\frac{1}{t}: t > 0 \text{ and } t\vec{0} \in B\} = \inf\{\frac{1}{t}: t > 0\} = 0$. Now, assume $N(\vec{x}) = 0$. Then, we can take a sequence $(t_n)$ in $\R$ such that $t_n > 0$ and $t_n\vec{x} \in B$ for all $n \in \N$ and $\frac{1}{t_n} \to 0$ as $n \to \infty$. This means that $t_n \to \infty$ while $t_n\vec{x} \in B$. Notice that if $\vec{x} \neq \vec{0}$, then we would have that $B$ is unbounded, hence we must have $\vec{x} = \vec{0}$. Therefore, $N(\vec{x}) \geq 0$ for all $\vec{x} \in X$ and $N(\vec{x}) = 0 \iff \vec{x} = \vec{0}$, so $N$ is positive definite.
-
-\underbar{Homogeneity:} Let $c \in \R$ and $\vec{x} \in X$. If $c = 0$, then $N(c\vec{x}) = N(0\vec{x}) = 0 = 0 \cdot N(\vec{x}) = |c| N(\vec{x})$, hence $N$ is homogeneous in this case. Now, take $c \neq 0$. Also, notice that since $B$ is balanced, $t \cdot c\vec{x} \in B \iff -t \cdot c\vec{x} \in B$ for $t > 0$, so we can replace $t \cdot c\vec{x} \in B$ with $t \cdot |c|\vec{x} \in B$. Now,
-\begin{align*}
-N(c\vec{x}) &= \inf\left\{\frac{1}{t}: t > 0 \text{ and } t \cdot c\vec{x} \in B\right\} &\\
-&= \inf\left\{\frac{1}{t}: t \cdot |c| > 0 \text{ and } t \cdot |c|\vec{x} \in B\right\} &\\
-&= |c|\inf\left\{\frac{1}{t \cdot |c|}: t \cdot |c| > 0 \text{ and } t \cdot |c|\vec{x} \in B\right\} &\\
-&= |c|\inf\left\{\frac{1}{t}: t > 0 \text{ and } t\vec{x} \in B\right\} &\\
-&= |c| \cdot N(\vec{x})
-\end{align*}
-Thus, $N$ is homogeneous.
-
-\underbar{Triangle Inequality:} Let $\vec{x}, \vec{y} \in X$. Then, by definition of $N$, we can take sequences $(t_n), (s_n)$ in $\R$ so that for all $n \in \N$ $t_n, s_n > 0$ and $t_n\vec{x}, s_n\vec{y} \in B$, and $\frac{1}{t_n} \to N(\vec{x})$ and $\frac{1}{s_n} \to N(\vec{y})$. Notice that for all $n \in \N$, we can take $t = s_n / (t_n + s_n) \in [0, 1]$ and apply convexity of $B$ to get the following: 
-\[
-t_n\vec{x}, s_n\vec{y} \in B \longimplies t\vec{x} + (1-t)\vec{y} \in B \longimplies \frac{s_n}{t_n + s_n}t_n\vec{x} + \left(1 - \frac{s_n}{t_n + s_n}\right)s_n\vec{y} = \frac{t_ns_n}{t_n + s_n}(\vec{x} + \vec{y}) \in B
-\]
-This means that $(t_ns_n / (t_n + s_n))^{-1} \in \{\frac{1}{t}: t > 0 \text{ and } t(\vec{x} + \vec{y})\}$, so the infimum of this set must be less than or equal to $(t_ns_n / (t_n + s_n))^{-1}$. Thus, we have
-\[
-    N(\vec{x} + \vec{y}) = \inf\left\{\frac{1}{t}: t > 0 \text{ and } t(\vec{x} + \vec{y}) \in B\right\} \leq \left(\frac{t_ns_n}{t_n + s_n}\right)^{-1} = \frac{1}{t_n} + \frac{1}{s_n} \to N(\vec{x}) + N(\vec{y})
-\]
-Therefore, $N$ has the triangle inequality property.
-
-Since $N$ is positive definite, homogeneous, and has triangle inequality, it must be a norm. Hence, we define our norm as $\norm{\cdot} = N$. Now, we show that $B = \{\vec{x} \in X: \norm{\vec{x}} \leq 1\}$ by showing both subset inclusions.
-
-Let $\vec{x} \in B$. Then, we have that $1 \in \{\frac{1}{t}: t > 0 \text{ and } t\vec{x} \in B\}$, so $\norm{\vec{x}} = \inf\{\frac{1}{t}: t > 0 \text{ and } t\vec{x} \in B\} \leq 1$. Hence, $B \subseteq \{\vec{x} \in X: \norm{\vec{x}} \leq 1\}$.
-
-Now, let $\vec{x} \in X$ so that $\norm{\vec{x}} \leq 1$. We will consider the cases $\norm{\vec{x}} = 0$, $\norm{\vec{x}} = 1$, and $0 < \norm{\vec{x}} < 1$ separately.
-
-\textit{Case 1:} $\norm{\vec{x}} = 0$. Then, we must have $\vec{x} = 0$ by positive definiteness. Taking any $\vec{b} \in B$ and $t = 0 \in [-1, 1]$, we apply the balanced property of $B$ to get $t\vec{b} = \vec{0} = \vec{x} \in B$.
-
-\textit{Case 2:} $\norm{\vec{x}} = 1$. Then, by definition of $\|\cdot\|$, we can take a sequence $(t_n)$ in $\R$ so that $t_n > 0$ and $t_n\vec{x} \in B$ for all $n \in \N$ and $\frac{1}{t_n} \to 1$. Notice that $\frac{1}{t_n} \to 1$ is equivalent to $t_n \to 1$. In turn, this implies that $t_n\vec{x} \to \vec{x}$. Since $t_n\vec{x} \in B$ for all $n \in \N$, we have that $\vec{x}$ is a limit point of $B$. Since $B$ is closed, $\vec{x} \in B$. 
-
-\textit{Case 3:} $0 < \norm{\vec{x}} < 1$. Then, taking $c = \frac{1}{\norm{\vec{x}}} > 0$, notice that $\norm{c\vec{x}} = 1$. As we have shown above, this implies that $c\vec{x} \in B$. Now, since $\frac{1}{c} = \norm{\vec{x}} \in [-1, 1]$, we can apply the balanced property of $B$ to get that $\frac{1}{c}c\vec{x} = \vec{x} \in B$.
-
-Since in all cases we get $\vec{x} \in B$, we must have $\{\vec{x} \in X: \norm{\vec{x}} \leq 1\} \subseteq B$.
-
-Therefore, there exists a norm $\norm{\cdot}: X \to \R$ so that $B = \{\vec{x} \in X: \norm{\vec{x}} \leq 1\}$.
-
+``$(iii) \implies (i)$". Suppose there exists a chart $(V, \Psi)$ containing $p$ for which $\Psi(p) \in \bdr\H^n$. By way of contradiction, suppose that $p \in X^\circ$. Then, there exists another chart $(U, \Phi)$ containing $p$ such that $\Phi(U)$ is open. Now, consider the composition $\Psi \circ \Phi^{-1}: \Phi(U \cap V) \to \Psi(U \cap V)$, which is a homeomorphism between two open sets in $\H^n$. Moreover, $\Phi(U \cap V)$ is open in $\R^n$, since it is an open subset within $\Phi(U)$, which itself is an open subset of $\R^n$. Now, notice that $p \in U \cap V$ and $\Psi(p) \in \bdr\H^n$. This implies that for all $\varepsilon > 0$, $B_n(p, \varepsilon)$ is not a subset of $\H^n$, since there is always a point in $B_n(p, \varepsilon)$ with a negative $n$-th coordinate. Hence, $\Psi(U \cap V)$ is not open in $\R^n$. However, since $\Psi \circ \Phi^{-1}: \Phi(U \cap V) \to \Psi(U \cap V)$ is an injection from an open set in $\R^n$, by Invariance of Domain (\ref{invdom}), we must have its image $\Psi(U \cap V)$ is open, which is a contradiction. Therefore, $p \in \bdr X$.
 \end{proof}
 
-The Magic Norm Theorem can be used to prove \ref{PNormTheorem} by showing that the closed unit ball that the $p$-norm would create has certain properties, rather than showing that the $p$-norm has the norm properties. This is done in \textsection\ref{PNormSection}.
+The following corollary follows from Theorem \ref{altdefbdr} by logical negations and definitions.
 
-\section{Differentiable Functions with Non-Decreasing Derivative}\label{FunctionLemmasSection}
+\begin{cor}[Alternative Definition of Interior Point]
+    \label{altdefint}
+    Let $X$ be locally-Euclidean-with-boundary of dimension $n$. Then, for all $p \in X$, the following three statements are equivalent:
+    \begin{enumerate}[label=\rm(\roman*)]
+        \item $p \in X^{\circ}$;
+        \item \textbf{for all} charts $(U, \Phi)$ containing $p$, we have $\Phi(p) \in (\H^n)^\circ$;
+        \item \textbf{there exists} a chart $(V, \Psi)$ containing $p$ such that $\Psi(p) \in (\H^n)^\circ$.
+    \end{enumerate}
 
-In this section, we prove a technical lemma (\ref{mainlemma}) for an oddly specific type of function. Note that this section deals with single-variable functions, so we use the classic, single-variable notion of the derivative.
+\end{cor}
 
-\begin{lemma}
-    \label{mainlemma}
-    Let $f: \R \to \R$ be continuously differentiable and twice differentiable on $\R$ except finitely many points. Furthermore, suppose that for all $t \in \R$ for which $f$ is twice differentiable, $f''(t) \geq 0$, and that $\lim_{t \to -\infty} f'(t) = -\infty$ and $\lim_{t \to \infty} f'(t) = \infty$. Then, there exists a point $t_0 \in \R$ so that $f$ is non-increasing on $(-\infty, t_0]$ and non-decreasing on $[t_0, \infty)$.
+We can finally prove Example \ref{exclosedhalf}.
+
+\begin{proof}[Proof (Example \ref{exclosedhalf})]
+$\H^n$ is clearly homeomorphic to $\H^n$, hence it is locally-Euclidean-with-boundary. We now show that all $p \in (\H^n)_\mathrm{open}$ are interior points of $\H^n$ and that all $p \in \R^{n - 1} \times \{0\}$ are boundary points.
+
+Let $p \in (\H^n)_\mathrm{open}$. Then, we can take a chart $(B_n(p, p_n), \id)$ for $p_n$ the $n$-th coordinate of $p$, which is positive. Clearly, we have $B_n(p, p_n) \subseteq (\H^n)_\mathrm{open}$ is an open set in $\R^n$, hence, by the original definition, $p$ is an interior point.
+
+Let $p \in \R^{n - 1} \times \{0\}$. To show that $p$ is a boundary point, by Theorem \ref{altdefbdr}, it is sufficient to find one chart for which the image of $p$ is in $\R^{n - 1} \times \{0\}$. Clearly, the identity chart $(\H^n, \id)$ will suffice.
+
+Now, notice that $\H^n = (\H^n)_\mathrm{open} \cup (\R^{n - 1} \times \{0\})$. We have just shown that $p \in (\H^n)_\mathrm{open}$ are interior points and that $p \in \R^{n - 1} \times \{0\}$ are boundary points. Since by definition, boundary and interior are disjoint, this must mean that $(\H^n)^\circ = (\H^n)_\mathrm{open}$ and $\bdr\H^n = \R^{n - 1} \times \{0\}$.
+\end{proof}
+
+We next will show that the interior and boundary are locally Euclidean, induce their charts from charts on the original space, and find the dimensions of interior and boundary.
+
+\begin{thm}[Charts on Interior and Boundary]
+    \label{chartintbdr}
+    Let $X$ be locally-Euclidean-with-boundary of dimension $n$ with a chart cover $A = \{(U_i, \Phi_i)\}_{i \in I}$. Then, $A^\circ := \{(U_i \cap X^\circ, \Phi_i|_{U_i \cap X^\circ})\}_{i \in I}$ and $\bdr A := \{(U_i \cap \bdr X, \Phi_i|_{U_i \cap \bdr X})\}_{i \in I}$\footnote{Here, we technically have that the codomain is $\R^{n - 1} \times \{0\}$, but we implicitly ignore the 0 at the end} are chart covers for $X^\circ$ and $\bdr X$, where the chart functions map to $\R^n$ and $\R^{n - 1}$ respectively. Hence, $X^\circ$ is locally Euclidean of dimension $n$, and $\bdr X$ is locally Euclidean of dimension $n - 1$.
+\end{thm}
+
+Here, for $\Phi_i|_{U_i \cap \bdr X}$, we will see that it map maps to $\R^{n - 1} \times \{0\}$. For this function, we implicitly ignore the $\times \{0\}$.
+
+\begin{proof}
+Firstly, notice that since $\bigcup_{i \in I} U_i = X$, we have $\bigcup_{i \in I} U_i \cap X^\circ = X^\circ$ and $\bigcup_{i \in I} U_i \cap \bdr X = \bdr X$. Thus, should elements of $A^\circ$ and $\bdr A$ be charts, we will have that they are chart covers.
+
+Let $(U, \Phi) \in A$, and consider $(V := U \cap X^\circ, \Psi := \Phi|_{U \cap X^\circ})$. Since $U$ is open in $X$, we have that $V = U \cap X^\circ$ is open in $X^\circ$. Also, $\Psi$ is a homeomorphism, since it is a restriction of another homeomorphism. So far, we have that $(V, \Psi)$ is chart mapping to an open subset of $\H^n$, but we would like it to map to an open subset in $\R^n$. Notice that all points in $V = U \cap X^\circ$ are interior points. By Corollary \ref{altdefint}, this means that $\Psi(V) \subseteq (\H^n)^\circ$. Since $\Psi(V)$ is an open subset of an open subset of $\R^n$, we have that $\Psi(V)$ is open in $\R^n$. Hence, $(V, \Psi)$ is a chart for $X^\circ$ mapping to $\R^n$. Therefore, we have a chart cover $A^\circ$ for $X^\circ$, mapping to open subsets in $\R^n$, which means that $X^\circ$ is locally Euclidean of dimension $n$.
+
+Now, let $(U, \Phi) \in A$, and consider $(V := U \cap \bdr X, \Psi := \Phi|_{U \cap \bdr X})$. Since $U$ is open in $X$, we have that $V = U \cap \bdr X$ is open in $\bdr X$. Also, $\Psi$ is a homeomorphism, since it is a restriction of another homeomorphism. So far, we have that $(V, \Psi)$ is chart mapping to an open subset of $\H^n$, but we would like it to map to an open subset in $\R^{n - 1}$. Notice that all points in $V = U \cap \bdr X$ are boundary points. By Theorem \ref{altdefbdr}, this means that $\Psi(V) \subseteq \bdr\H^n$. Now, we rewrite $\Psi(V)$:
+\[
+    \Psi(V) = \Phi|_{U \cap \bdr X}(U \cap \bdr X) = \Phi(U) \cap \Phi(\bdr X) \subseteq \Phi(U) \cap \bdr\H^n
+\]
+Since $\Phi(U)$ is open in $\H^n$, we have that $\Psi(V)$ is open in $\bdr\H^n = \R^{n - 1} \times \{0\}$. Treating $\R^{n - 1} \times \{0\}$ as $\R^{n - 1}$, we see that $\Psi(V)$ is open in $\R^{n - 1}$. Hence, $(V, \Psi)$ is a chart for $\bdr X$ mapping to $\R^{n - 1}$. Therefore, we have a chart cover $\bdr A$ for $\bdr X$, mapping to open subsets in $\R^{n - 1}$, which means that $\bdr X$ is locally Euclidean of dimension $n - 1$.
+\end{proof}
+
+\section{Examples of Locally Euclidean Spaces with Boundary}
+
+Other than the closed half space (\ref{exclosedhalf}), there are many more examples of locally Euclidean spaces with boundary. Here, we show that every locally Euclidean space is automatically locally Euclidean with boundary, and we cover an interesting example of a locally Euclidean space with boundary.
+
+\begin{prop}
+    \label{letolewb}
+    Let $X$ be locally Euclidean of dimension $n$. Then, $X$ is locally Euclidean with boundary of dimension $n$ with $X^\circ = X$ and $\bdr X = \varnothing$.
+\end{prop}
+
+\begin{proof}
+Take a chart cover $A = \{(U_i, \Phi_i)\}_{i \in I}$ for $X$. Note that this chart cover is for a regular locally Euclidean space, so $\Phi_i$'s map to subsets of $\R^n$, not to subsets of $\H^n$. We can fix this by considering the map $F: \R^n \to (\H^n)^\circ, F(x_1, \dots, x_n) = (x_1, \dots, x_{n - 1}, e^{x_n})$, which is clearly a homeomorphism. This map allows us to create a chart $(U_i, F \circ \Phi_i)$ for each $i$, where $F \circ \Phi_i$ maps from $U_i$ to a subset of $(\H^n)^\circ$. Furthermore, notice that since $\Phi_i(U_i)$ is open in $\R^n$ and $F$ is a homeomorphism, we must have that the image $(F \circ \Phi_i)(U_i) = F(\Phi_i(U_i))$ is open in $(\H^n)^\circ$. Hence, $\{(U_i, F \circ \Phi_i)\}_{i \in I}$ is a chart cover for the locally Euclidean space with boundary $X$.
+
+So far, we have that for every $p \in X$, we have a chart $(U_i, F \circ \Phi_i)$ containing $p$, and that $(F \circ \Phi_i)(U_i)$ is open in $(\H^n)^\circ$. Since $(\H^n)^\circ$ is an open subset of $\R^n$, we must have that $(F \circ \Phi_i)(U_i)$ is open in $\R^n$. Thus, by definition, $p$ is an interior point of $X$. Since this holds for every $p \in X$, we have $X^\circ = X$. We also have $\bdr X = X \setminus X^\circ = \varnothing$.
+\end{proof}
+
+One of the first interesting examples of locally Euclidean spaces that we learned was a circle, and then a sphere. Similarly, for locally Euclidean spaces with boundary, one of the first interesting examples that you must know is the closed ball.
+
+\begin{example}[Closed Ball]
+    \label{clball}
+    Let $n \in \N$ and $D^n := \cl{B}_n(0, 1)$ be the closed unit ball in $\R^n$. Notice that we can write $D^n = B_n(0, 1) \cup S^{n - 1}$, where $S^{n - 1} = \{\vec{x} \in \R^n: \norm{\vec{x}}_2 = 1\}$. $D^n$ is locally Euclidean with boundary of dimension $n$ with $(D^n)^\circ = B_n(0, 1)$ and $\bdr D^n = S^{n - 1}$.
+\end{example}
+
+\begin{proof}
+Let $\vec{N} = (0, \dots, 0, 1) \in D^n$ be the north pole. Our goal is to define a homeomorphism $\Phi: D^n \setminus \{\vec{N}\} \to \H^n$. The idea behind our homeomorphism is to draw a line from the north pole to the point, and then consider the line segment inside the set $D^n \setminus \{\vec{N}\}$, as well as the intersection of this line and the $x_n = 0$ plane. This line segment will be half-open, so we will be able to map onto the ray $[0, \infty)$, with origin at the interection with the $x_n = 0$ plane.
+
+Let $\Phi: D^n \setminus \{\vec{N}\} \to \H^n$ defined by
+\[
+    (\Phi(\vec{x}))_i = \begin{cases}
+        \dfrac{x_i}{1 - x_n} & i \neq n \\
+        \dfrac{1 - x_1^2 - \cdots - x_n^2}{x_1^2 + \cdots + x_{n - 1}^2 + (x_n - 1)^2} & i = n
+    \end{cases}
+\]
+Clearly, $\Phi$ is continuous. We now find the inverse of $\Phi$. Consider the map $\Psi: \H^n \to D^n \setminus \{\vec{N}\}$ defined by
+\[
+    (\Psi(\vec{y}))_i = \begin{cases}
+        \dfrac{2y_i}{(y_n + 1)(y_1^2 + \cdots + y_{n - 1}^2 + 1)} & i \neq n \\
+        1 - \dfrac{2}{(y_n + 1)(y_1^2 + \cdots + y_{n - 1}^2 + 1)} & i = n
+    \end{cases}
+\]
+which is clearly continuous. We claim that $\Psi \circ \Phi (\vec{x}) = \vec{x}$ and $\Phi \circ \Psi (\vec{y}) = \vec{y}$.
+\[
+    \Psi \circ \Phi (\vec{x}) 
+    = \Psi\left(\dfrac{x_1}{1 - x_n}, \dots, \dfrac{x_{n - 1}}{1 - x_n}, \dfrac{1 - x_1^2 - \cdots - x_n^2}{x_1^2 + \cdots + x_{n - 1}^2 + (x_n - 1)^2}\right)
+\]
+Denoting the input into $\Psi$ as $\vec{y}$, we want to evaluate $(y_n + 1)(y_1^2 + \cdots + y_{n - 1}^2 + 1)$ first. That will be equal to
+\begin{align*}
+    &\left(\dfrac{1 - x_1^2 - \cdots - x_n^2}{x_1^2 + \cdots + x_{n - 1}^2 + (x_n - 1)^2} + 1\right)\left(\left(\dfrac{x_1}{1 - x_n}\right)^2 + \cdots + \left(\dfrac{x_{n - 1}}{1 - x_n}\right)^2 + 1\right) \\
+    &= \left(\dfrac{1 + (x_n - 1)^2 - x_n^2}{x_1^2 + \cdots + x_{n - 1}^2 + (x_n - 1)^2}\right)\left(\dfrac{x_1^2 + \cdots + x_{n - 1}^2 + (1 - x_n)^2}{(1 - x_n)^2}\right) \\
+    &= \dfrac{1 + (x_n - 1)^2 - x_n^2}{(1 - x_n)^2}
+\end{align*}
+Using this, we get that for $i \neq n$,
+\begin{align*}
+    (\Psi \circ \Phi (\vec{x}))_i 
+    &= \dfrac{2y_i}{(y_n + 1)(y_1^2 + \cdots + y_{n - 1}^2 + 1)} \\
+    &= 2\dfrac{x_i}{1 - x_n} \cdot \dfrac{(1 - x_n)^2}{1 + (x_n - 1)^2 - x_n^2} \\
+    &= 2x_i \cdot \dfrac{1 - x_n}{2 - 2x_n} \\
+    &= x_i
+\end{align*}
+Also, for $i = n$, we get
+\begin{align*}
+    (\Psi \circ \Phi (\vec{x}))_i 
+    &= 1 - \dfrac{2}{(y_n + 1)(y_1^2 + \cdots + y_{n - 1}^2 + 1)} \\
+    &= 1 - 2\cdot\dfrac{(1 - x_n)^2}{1 + (x_n - 1)^2 - x_n^2} \\
+    &= 1 - 2\cdot\dfrac{(1 - x_n)^2}{2 - 2x_n} \\
+    &= 1 - (1 - x_n) \\
+    &= x_n
+\end{align*}
+Therefore, we have $\Psi \circ \Phi(\vec{x}) = \vec{x}$.
+
+Now, we consider $\Phi \circ \Psi (\vec{y})$. Denoting $(\Psi(\vec{y}))_i$ by $x_i$, we have
+\[
+    \Phi \circ \Psi (\vec{y}) = \left(\dfrac{x_1}{1 - x_n}, \dots, \dfrac{x_{n - 1}}{1 - x_n}, \dfrac{1 - x_1^2 - \cdots - x_n^2}{x_1^2 + \cdots + x_{n - 1}^2 + (x_n - 1)^2}\right)
+\]
+For $i \neq n$, we have
+\[
+    (\Phi \circ \Psi(\vec{y}))_i = \dfrac{x_i}{1 - x_n} = \dfrac{\dfrac{2y_i}{(y_n + 1)(y_1^2 + \cdots + y_{n - 1}^2 + 1)}}{1 - 1 + \dfrac{2}{(y_n + 1)(y_1^2 + \cdots + y_{n - 1}^2 + 1)}} = y_i
+\]
+For $i = n$, we have
+\begin{align*}
+    (\Phi \circ \Psi(\vec{y}))_n
+    &= \dfrac{1 - x_1^2 - \cdots - x_n^2}{x_1^2 + \cdots + x_{n - 1}^2 + (x_n - 1)^2} \\
+    &= \dfrac{\dfrac{1}{(1 - x_n)^2} - \left(\dfrac{x_1}{1 - x_n}\right)^2 - \cdots - \left(\dfrac{x_n}{1 - x_n}\right)^2}{\left(\dfrac{x_1}{1 - x_n}\right)^2 + \cdots + \left(\dfrac{x_{n - 1}}{1 - x_n}\right)^2 + 1} \\
+    &= \dfrac{\dfrac{1}{(1 - x_n)^2} - y_1^2 - \cdots - y_{n - 1}^2 - \left(\dfrac{x_n}{1 - x_n}\right)^2}{y_1^2 + \cdots + y_{n - 1}^2 + 1} \\
+    &= \dfrac{\dfrac{1}{(1 - x_n)^2} + 1 - \left(\dfrac{x_n}{1 - x_n}\right)^2}{y_1^2 + \cdots + y_{n - 1}^2 + 1} - 1 \\
+    &= \dfrac{1 + (1 - x_n)^2 - x_n^2}{(1 - x_n)^2(y_1^2 + \cdots + y_{n - 1}^2 + 1)} - 1 \\
+    &= \dfrac{2 - 2x_n}{(1 - x_n)^2(y_1^2 + \cdots + y_{n - 1}^2 + 1)} - 1 \\
+    &= \dfrac{2}{\left(1 - 1 + \dfrac{2}{(y_n + 1)(y_1^2 + \cdots + y_{n - 1}^2 + 1)}\right)(y_1^2 + \cdots + y_{n - 1}^2 + 1)} - 1 \\
+    &= (y_n + 1) + 1\\
+    &= y_n
+\end{align*}
+Hence, we have $\Phi \circ \Psi (\vec{y}) = \vec{y}$.
+
+Therefore, $\Psi$ is an inverse of $\Phi$. Since both of these are continuous, we must have that $\Phi: D^n \setminus \{\vec{N}\} \to \H^n$ is a homeomorphism from an open set in the closed ball to an open set in $\H^n$. From this point, we will denote this chart by $(U_N, \Phi_N)$.
+
+Now we consider another chart $(D^n \setminus \{\vec{S}\}, \Phi)$, where $\vec{S} = (0, \dots, 0, -1)$ is the south pole, and $\Phi: D^n \setminus \{\vec{S}\} \to \H^n$ defined by
+\[
+    (\Phi(\vec{x}))_i = \begin{cases}
+        \dfrac{x_i}{1 + x_n} & i \neq n \\
+        \dfrac{1 - x_1^2 - \cdots - x_n^2}{x_1^2 + \cdots + x_{n - 1}^2 + (x_n + 1)^2} & i = n
+    \end{cases}
+\]
+There is a subtle relationship between $\Phi$ and $\Phi_N$. Taking $R_{x_n = 0}: \R^n \to \R^n$ to be the reflection map $R_{x_n = 0}(\vec{x}) = (x_1, \dots, x_{n - 1}, -x_n)$, we see that $\Phi = \Phi_N \circ R_{x_n = 0}$. Since $R_{x_n = 0}(\vec{x})$ is a continuous isomorphism, we have that $\Phi$ is a homeomorphism. We now write this chart as $(U_S, \Phi_S)$.
+
+We have found two charts $(U_N, \Phi_N), (U_S, \Phi_S)$ on $D^n$, for which $U_N \cup U_S = D^n$, hence we found a chart cover for $D^n$. Therefore, $D^n$ is locally Euclidean with boundary of dimension $n$.
+
+We now show that $\Phi_N(B_n(0, 1)) \subseteq (\H^n)^\circ$, which would mean that $B_n(0, 1) \subseteq (D^n)^\circ$. Let $\vec{y} \in \Phi_N(B_n(0, 1))$. We must show that $y_n > 0$. Take $\vec{x} \in B_n(0, 1)$ such that $\Phi_N(\vec{x}) = \vec{y}$. This means that
+\[
+    y_n = \dfrac{1 - x_1^2 - \cdots - x_n^2}{x_1^2 + \cdots + x_{n - 1}^2 + (x_n - 1)^2}
+\]
+Since $\vec{x} \in B_n(0, 1)$, we have $x_1^2 + \cdots + x_n^2 < 1$, which means that the numerator is positive. Furthermore, the denominator is always positive, hence $y_n > 0$. Therefore, $\Phi_N(B_n(0, 1)) \subseteq (\H^n)^\circ$, which means that $B_n(0, 1) \subseteq (D^n)^\circ$.
+
+Now, we show that $\Phi_N(S^{n - 1} \setminus \{\vec{N}\}) \subseteq \bdr\H^n$, which would mean that $S^{n - 1} \setminus \{\vec{N}\} \subseteq \bdr D^n$. Taking $\vec{y} \in \Phi_N(S^{n - 1} \setminus \{\vec{N}\})$ and $\vec{x} \in S^{n - 1} \setminus \{\vec{N}\}$ such that $\Phi_N(\vec{x}) = \vec{y}$. Then, we have
+\[
+    y_n = \dfrac{1 - x_1^2 - \cdots - x_n^2}{x_1^2 + \cdots + x_{n - 1}^2 + (x_n - 1)^2}
+\]
+Since $\vec{x} \in S^{n - 1}$, we have $x_1^2 + \cdots + x_n^2 = 1$, and hence, $y_n = 0$. Therefore, $\vec{y} \in \bdr\H^n$, and so, $S^{n - 1} \setminus \{\vec{N}\} \subseteq \bdr D^n$.
+
+Lastly, we show that $\Phi_S(\vec{N}) \in \bdr\H^n$. We have that
+\[
+    (\Phi_S(\vec{N}))_n = \dfrac{1 - N_1^2 - \cdots - N_n^2}{N_1^2 + \cdots + N_{n - 1}^2 + (N_n + 1)^2} = 0
+\]
+Therefore, $\vec{y} \in \bdr\H^n$, and so, $\vec{N} \in \bdr D^n$.
+
+Since $(D^n)^\circ$ and $\bdr D^n$ are disjoint, we must have that $(D^n)^\circ = B_n(0, 1)$ and $\bdr D^n = S^{n - 1}$.
+\end{proof}
+
+\section{Manifolds With Boundary}
+
+Just like with the usual manifolds, we want our manifold with boundary to be a tuple of a metric space and a structure. Firstly, we define an atlas and structure for a locally Euclidean space with boundary, almost identically to regular manifolds.
+
+\begin{defn}
+    \label{atllewb}
+    Let $X$ be locally-Euclidean-with-boundary, and $\atl{A} = \{U_i, \Phi_i\}_{i \in I}$ be a chart cover for $X$. We say that $\atl{A}$ is a \textbf{$C^k$ atlas} if for all $i, j \in I$, the \textbf{transition map} $\Phi_i \circ \Phi_j^{-1}: \Phi_j(U_i \cap U_j) \to \Phi_i(U_i \cap U_j)$ and its inverse are $C^k$ -- that is, the charts $(U_i, \Phi_i)$ and $(U_j, \Phi_j)$ are \textbf{$C^k$ compatible}\footnote{Note that the map $\Phi_i \circ \Phi_j^{-1}$ may be defined on sets that are not open in $\R^n$. However, this is not an issue, since we defined differentiability on arbitrary sets.}.
+\end{defn}
+
+\begin{defn}
+    Let $X$ be locally-Euclidean-with-boundary, and $\str{A} = \{U_i, \Phi_i\}_{i \in I}$ be a $C^k$ atlas. We say that $\str{A}$ is a \textbf{$C^k$ structure}, if satisfies the following maximality condition:
+    \begin{center}
+        If a chart $(U, \Phi)$ is $C^k$ compatible with all charts in $\str{A}$, then $(U, \Phi) \in \str{A}$.
+    \end{center}
+\end{defn}
+
+We now prove that every atlas can be extended to a structure.
+
+\begin{lemma}[Existence and Uniqueness of Structures]
+    \label{atltostr}
+    Let $X$ be locally-Euclidean-with-boundary, and $\atl{A}$ be a $C^k$ atlas on $X$, for $k \in \N \cup \{\infty\}$. Then, there exists a unique $C^k$ structure $\cl{\atl{A}} \supseteq \atl{A}$.
 \end{lemma}
 
-To clarify, we define non-increasing and non-decreasing in the following way:
+\begin{proof}
+Let $\cl{\mathcal{A}}$ be the collection of all charts $(U,\Phi)$ on $X$ which are compatible with every chart in $\mathcal{A}$. Clearly, $\atl{A} \subseteq \cl{\atl{A}}$. We now have three things to show:
+\begin{enumerate}[label=\rm(\roman*)]
+    \item $\cl{\atl{A}}$ is a $C^k$ atlas; that is all charts in $\cl{\atl{A}}$ are $C^k$ compatible;
+    \item $\cl{\atl{A}}$ is maximal; and
+    \item $\cl{\atl{A}}$ is unique.
+\end{enumerate}
 
-\begin{defn}[Non-Increasing]
-    \label{nonincdef}
-    Let $f: U \to \R$ where $U \subseteq \R$. Then, $f$ is non-increasing on $V \subseteq U$ if and only if for all $x, y \in V$, $x < y \implies f(x) \geq f(y)$.
+(i). Let $(U, \Phi), (V, \Psi) \in \cl{\atl{A}}$. If at least one of these is in $A$, then they are automatically compatible by construction. Otherwise, we have $(U, \Phi), (V, \Psi) \notin \atl{A}$. To show that these charts are compatible, WLOG, it is sufficient to show that $\Phi \circ \Psi^{-1}: \Psi(U \cap V) \to \Phi(U \cap V)$ is $C^k$. Let $p \in U \cap V$. To show that $\Phi \circ \Psi^{-1}$ is $C^k$, it is sufficient to show that it is $C^k$ locally at $p$. Take a chart $(W, \Lambda) \in \atl{A}$ containing $p$. We now restrict $\Phi \circ \Psi^{-1}$ onto the domain $\Psi(U \cap V \cap W)$, which is fine for our purposes, since $U \cap V \cap W$ is still open in $\H^n$. Now, we write for $\widehat{p} = \Psi(p) \in \Psi(U \cap V \cap W)$
+\[
+    \Phi \circ \Psi^{-1}(\widehat{p}) = (\Phi \circ \Lambda^{-1}) \circ (\Lambda \circ \Psi^{-1})(\widehat{p})
+\]
+Now, notice that since $(W, \Lambda) \in \atl{A}$, by construction of $\cl{\atl{A}}$, $\Phi \circ \Lambda^{-1}$ and $\Lambda \circ \Psi^{-1}$ are $C^k$. Hence, $\Phi \circ \Psi^{-1}$ is also $C^k$ as a composition of $C^k$ maps. Therefore, all charts in $\cl{\atl{A}}$ are compatible, and so, $\cl{\atl{A}}$ is a $C^k$ atlas.
+
+(ii). Let $(U, \Phi)$ be a chart that is compatible with all charts in $\cl{\atl{A}}$. Then, $(U, \Phi)$ is compatible with all charts in $\atl{A}$, so by construction, $(U, \Phi) \in \cl{\atl{A}}$.
+
+Thus, we have that there exists a $C^k$ structure for each $C^k$ atlas on $X$. Now, we show that this structure is unique.
+
+(iii). Suppose we have two $C^k$ structures $\cl{\atl{A}}, \cl{\atl{B}}$ containing $\atl{A}$. WLOG, it is sufficient to show that $\cl{\atl{A}} \subseteq \cl{\atl{B}}$. Let $(U, \Phi) \in \str{A}$. We show that $(U, \Phi)$ is compatible with a chart $(V, \Psi) \in \str{B}$. Notice that if $(V, \Psi) \in \atl{A}$, then the charts are automatically compatible, since $\atl{A} \subseteq \str{A}$. Now, similarly to (i), we take a point $p \in U \cap W$, and chart $(W, \Lambda) \in \atl{A}$ containing $p$. Then, we have that locally, the composition $\Phi \circ \Psi^{-1}$ becomes $(\Phi \circ \Lambda^{-1}) \circ (\Lambda \circ \Psi^{-1})$, where $\Phi \circ \Lambda^{-1}$ is $C^k$, since $(W, \Lambda), (U, \Phi) \in \str{A}$, and $\Lambda \circ \Psi^{-1}$ is $C^k$, since $(W, \Lambda), (V, \Psi) \in \str{B}$. Hence, the composition of $C^k$ maps $\Phi \circ \Psi^{-1} = (\Phi \circ \Lambda^{-1}) \circ (\Lambda \circ \Psi^{-1})$ is also $C^k$, meaning that $(U, \Phi)$ is compatible with $(V, \Psi)$. Hence, $(U, \Phi)$ is compatible with all charts in $\str{B}$, which, by maximality of $\str{B}$, means that $(U, \Phi) \subseteq \str{B}$. Therefore, we have that $\str{A} = \str{B}$, meaning that the maximal atlas of $\atl{A}$ is unique.
+\end{proof}
+
+Now, we are ready to define a manifold with boundary.
+
+\begin{defn}[$C^k$ Manifold with Boundary]
+    For $k \in \N \cup \{\infty\}$, a \textbf{$C^k$ manifold with boundary} is a locally Euclidean space with boundary $X$ together with a $C^k$ structure $\str{A}$, denoted as a tuple $(X, \str{A})$.
 \end{defn}
 
-\begin{defn}[Non-Decreasing]
-    \label{nondecdef}
-    Let $f: U \to \R$ where $U \subseteq \R$. Then, $f$ is non-decreasing on $V \subseteq U$ if and only if for all $x, y \in V$, $x < y \implies f(x) \leq f(y)$.
-\end{defn}
+The next theorem shows that the charts we induced earlier for the interior and boundary of a locally Euclidean space with boundary actually form atlases if the original chart cover was compatible. Hence, the inteior and boundary of a manifold with boundary are actually regular manifolds.
 
-Before proving Lemma \ref{mainlemma}, we prove two additional proposition.
+\begin{thm}
+    \label{atlintbdr}
+    Let $(X, \str{A})$ be a $C^k$ manifold with boundary, and write $\str{A} = \{(U_i, \Phi_i)\}_{i \in I}$. Then, the chart covers $\str{A}^\circ$ and $\bdr\str{A}$ defined in Theorem \ref{chartintbdr} are $C^k$ atlases on $X^\circ$ and $\bdr X$. Since these can be extended to structures, $X^\circ$ and $\bdr X$ are $C^k$ manifolds of dimensions $n$ and $n - 1$ respectively.
+\end{thm}
+
+\begin{proof}
+By Theorem \ref{chartintbdr}, $\str{A}^\circ$ and $\bdr\str{A}$ are already chart covers for $X^\circ$ and $\bdr X$. Also, the charts in $\str{A}^\circ$ and $\bdr\str{A}$ are clearly compatible as restrictions of compatible charts. Thus, so far, we have $\str{A}^\circ$ and $\bdr\str{A}$ are atlases for $X^\circ$ and $\bdr X$. Since these can be extended to structures, we have that $X^\circ$ and $\bdr X$ are $C^k$ manifolds.
+\end{proof}
+
+Note that the atlas for $X^\circ$ from Theorem \ref{atlintbdr} is almost never maximal -- since its charts map onto $(\H^n)^\circ$, we can get a compatible chart by reflecting the chart function to map onto $-(\H^n)^\circ$, which cannot be in the atlas. The maximality of the atlas for $\bdr X$ requires its own investigation.
+
+\section{Examples of Manifolds With Boundary}
+
+Here, we revisit all examples of locally Euclidean spaces with boundary that we encountered, and we show that they are manifolds with boundary.
+
+\begin{example}[Closed Half Space Revisited]
+    In Example \ref{exclosedhalf}, we have shown that $\H^n$ is locally Euclidean with boundary of dimension $n$. Using the same charts, $\H^n$ is a smooth manifold with boundary of dimension $n$.
+\end{example}
+
+\begin{proof}
+Recall that we had a chart cover $\atl{A} = \{(\H^n, \id)\}$ for $\H^n$. Since this cover contains one chart, we have that all charts in $\atl{A}$ are $C^\infty$ compatible, hence $\atl{A}$ is a $C^\infty$ atlas on $\H^n$. By Lemma \ref{atltostr}, $\atl{A}$ extends to a structure $\str{A}$, which means that $\H^n$ is a $C^\infty$ manifold with boundary.
+\end{proof}
 
 \begin{prop}
-    \label{nonincprop}
-    Let $f: I \to \R$ be differentiable where $I \subseteq \R$ is an interval. Suppose that $f'(t) \leq 0$ for all $t \in I$. Then, $f$ is non-increasing on its domain.
+    Let $(X, \str{A})$ be a $C^k$ manifold (without boundary) of dimension $n$. In Proposition \ref{letolewb}, we have shown that $X$ is locally Euclidean with boundary of dimension $n$. Here, we show that $X$ is a $C^k$ manifold with boundary of dimension $n$, using the same charts.
 \end{prop}
 
 \begin{proof}
-Let $x, y \in I$ and assume $x < y$. Since $I$ is an interval and $x, y \in I$, we must have $[x, y] \subseteq I$. Furthermore, $f$ is continuous and differentiable on $[x, y]$. By the classic Mean Value Theorem, there exists $c \in (x, y)$ so that
-\[
-    \frac{f(y) - f(x)}{y - x} = f'(c) \leq 0
-\]
-Since $x < y$, we have $y - x > 0$, so $\frac{f(y) - f(x)}{y - x} \leq 0 \implies f(y) - f(x) \leq 0 \implies f(x) \geq f(y)$. Therefore, $f$ is non-increasing.
+Recall that in the proof of Proposition \ref{letolewb}, we have constructed the homeomorphism $F: \R^n \to (\H^n)^\circ, F(\vec{x}) = (x_1, \dots, x_{n - 1}, e^{x_n})$. As we can see, this function and its inverse are also smooth. We have also shown that for the cover $\str{A} = \{U_i, \Phi_i\}_{i \in I}$ for the locally Euclidean $X$, we have a cover $B = \{U_i, F \circ \Phi_i\}_{i \in I}$ for the locally Euclidean with boundary $X$. Now, we show that this $B$ is in fact an atlas.
 
+Let $i,j \in I$ and consider the charts $(U_i, F \circ \Phi_i), (U_j, F \circ \Phi_j) \in B$. To show that these are $C^k$ compatible, we show that the composition $(F \circ \Phi_i) \circ (F \circ \Phi_j)^{-1}$, and its inverse, $(F \circ \Phi_j) \circ (F \circ \Phi_i)^{-1}$ are $C^k$. For the first one, we have
+\[
+    (F \circ \Phi_i) \circ (F \circ \Phi_j)^{-1} = F \circ (\Phi_i \circ \Phi_j^{-1}) \circ F^{-1}
+\]
+Since $(U_i, \Phi_i), (U_j, \Phi_j) \in \str{A}$, we have that $\Phi_i \circ \Phi_j^{-1}$ is $C^k$. Hence, the composition of $C^k$ functions, $F \circ (\Phi_i \circ \Phi_j^{-1}) \circ F^{-1}$ is $C^k$. Similarly, we have
+\[
+    (F \circ \Phi_j) \circ (F \circ \Phi_i)^{-1} = F \circ (\Phi_j \circ \Phi_i^{-1}) \circ F^{-1}
+\]
+which is smooth for the same reason. Therefore, $B$ is a $C^k$ atlas for the $C^k$ manifold with boundary $X$. From this point, we will denote $B$ as $\atl{B}$.
+
+We can actually take this one step further and show that $\atl{B}$ is already maximal, instead of having to use Lemma \ref{atltostr} to extend $\atl{B}$. Let $(U, \Phi)$ be a chart for the $C^k$ manifold with boundary $X$ that is compatible with all charts in $\atl{B}$. Firstly, since $\bdr X = \varnothing$, we must have that $U \subseteq X^\circ$, so by Corollary \ref{altdefint}, $\Phi(U) \subseteq (\H^n)^\circ$. This allows to construct the chart $(U, F^{-1} \circ \Phi)$ for the $C^k$ manifold $X$. Now, we show that this chart is compatible with every chart in $\str{A}$. For an arbitrary $i \in I$ and chart $(U_i, \Phi_i) \in \str{A}$, we consider the map $(F^{-1} \circ \Phi) \circ \Phi_i^{-1}$. We can write it as
+\[
+    (F^{-1} \circ \Phi) \circ (F^{-1} \circ F \circ \Phi_i)^{-1} = F^{-1} \circ (\Phi \circ (F \circ \Phi_i)^{-1}) \circ F
+\]
+Notice that by compatibility of $(U, \Phi)$ with $(U_i, F \circ \Phi) \in \atl{B}$, we have that $\Phi \circ (F \circ \Phi_i)^{-1}$ is $C^k$. Since $F, F^{-1}$ are smooth, we have that $(F^{-1} \circ \Phi) \circ (F^{-1} \circ F \circ \Phi_i)^{-1}$ is $C^k$. Similarly, the inverse of this map is also $C^k$, which means that $(U, F^{-1} \circ \Phi)$ is $C^k$ compatible with every chart in $\str{A}$. By maximality, we have that $(U, F^{-1} \circ \Phi) = (U_i, \Phi_i)$ for some $i \in I$. By construction of $\atl{B}$, this means that $(U_i, F \circ \Phi_i) = (U, \Phi)$ is already in $\atl{B}$. Hence, $\atl{B}$ is a $C^k$ structure for the $C^k$ manifold with boundary $X$.
 \end{proof}
 
+\begin{example}[Closed Ball Revisited]
+    In Example \ref{clball}, we have shown that $D^n$ is locally Euclidean with boundary of dimension $n$. Using the same charts, $D^n$ is a smooth manifold with boundary of dimension $n$.
+\end{example}
+
+\begin{proof}
+Recall that $\{(U_N, \Phi_N), (U_S, \Phi_S)\}$ is a chart cover for $D^n$. Clearly, $(U_N, \Phi_N)$ is $C^\infty$ compatible with itself, as well as $(U_S, \Phi_S)$. We now show that $\Phi_N \circ \Phi_S^{-1}$ is smooth. We first recall that $\Phi_S = \Phi_N \circ R_{x_n = 0}$, so $\Phi_S^{-1} = R_{x_n = 0} \circ \Phi_N^{-1}$ ($R_{x_n = 0} \circ R_{x_n = 0} = \id$, since it's a double reflection). For all $\vec{y} = \Phi_S(U_N \cap U_S) = \H^n \setminus \{\vec{0}\}$, we have
+\begin{align*}
+    \Phi_N \circ \Phi_S^{-1}(\vec{y})
+    &= \Phi_N \circ R_{x_n = 0} \circ \Phi_N^{-1}(\vec{y}) \\
+    &= \Phi_N \circ R_{x_n = 0} \left(\begin{cases}
+        \dfrac{2y_i}{(y_n + 1)(y_1^2 + \cdots + y_{n - 1}^2 + 1)} & i \neq n \\
+        1 - \dfrac{2}{(y_n + 1)(y_1^2 + \cdots + y_{n - 1}^2 + 1)} & i = n
+    \end{cases}\right) \\
+    &= \Phi_N \left((x_1, \dots, x_n) = \begin{cases}
+        \dfrac{2y_i}{(y_n + 1)(y_1^2 + \cdots + y_{n - 1}^2 + 1)} & i \neq n \\
+        \dfrac{2}{(y_n + 1)(y_1^2 + \cdots + y_{n - 1}^2 + 1)} - 1 & i = n
+    \end{cases}\right) \\
+\end{align*}
+For $i \neq n$, we have $(\Phi_N \circ \Phi_S^{-1}(\vec{y}))_i$ is 
+\begin{align*}
+    (\Phi_N \circ \Phi_S^{-1}(\vec{y}))_i 
+    &= (\Phi_N(x_1, \dots, x_n))_i \\
+    &= \frac{x_i}{1 - x_n} \\
+    &= \dfrac{\dfrac{2y_i}{(y_n + 1)(y_1^2 + \cdots + y_{n - 1}^2 + 1)}}{1 - \dfrac{2}{(y_n + 1)(y_1^2 + \cdots + y_{n - 1}^2 + 1)} + 1} \\
+    &= \dfrac{y_i}{(y_n + 1)(y_1^2 + \cdots + y_{n - 1}^2 + 1) - 1} \\
+\end{align*}
+For $i = n$, we have $(\Phi_N \circ \Phi_S^{-1}(\vec{y}))_n$ is 
+\begin{align*}
+    &(\Phi_N \circ \Phi_S^{-1}(\vec{y}))_n \\
+    &= (\Phi_N(x_1, \dots, x_n))_n \\
+    &= \dfrac{1 - x_1^2 - \cdots - x_n^2}{x_1^2 + \cdots + x_{n - 1}^2 + (x_n - 1)^2} \\
+    &= \dfrac{1 - \displaystyle\sum_{i = 1}^{n - 1}\left(\dfrac{2y_i}{(y_n + 1)(y_1^2 + \cdots + y_{n - 1}^2 + 1)}\right)^2 - \left(\dfrac{2}{(y_n + 1)(y_1^2 + \cdots + y_{n - 1}^2 + 1)} - 1\right)^2}{\displaystyle\sum_{i = 1}^{n - 1}\left(\dfrac{2y_i}{(y_n + 1)(y_1^2 + \cdots + y_{n - 1}^2 + 1)}\right)^2 + \left(\dfrac{2}{(y_n + 1)(y_1^2 + \cdots + y_{n - 1}^2 + 1)} - 2\right)^2} \\
+\end{align*}
+Clearly, we have that the component functions of $\Phi_N \circ \Phi_S^{-1}$ are smooth, hence $\Phi_N \circ \Phi_S^{-1}$ is smooth. The inverse of this composition is $\Phi_S \circ \Phi_N^{-1} = \Phi_N \circ R_{x_n = 0} \circ \Phi_N^{-1}$, which equals $\Phi_N \circ \Phi_S^{-1}$, hence is also smooth. Therefore, $(U_N, \Phi_N)$ and $(U_S, \Phi_S)$ are compatible, and hence $\{(U_N, \Phi_N), (U_S, \Phi_S)\}$ is a $C^\infty$ atlas. Extending it to a structure $\str{A}$ by Lemma \ref{atltostr}, we have that $(D^n, \str{A})$ is a smooth manifold with boundary of dimension $n$.
+\end{proof}
+
+\appendix
+
+\section{Invariance of Domain}
+
+Theorem \ref{altdefbdr} have proven to be extremely useful when computing the boundary of a locally Euclidean space with boundary. To prove it, we used a theorem which is true, but do not have the tools from topology to prove, hence for us, it is a conjecture.
+
+\begin{conj}[Invariance of Domain]
+    \label{invdom}
+    Let $U \subseteq \R^n$ be an open set, and $F: U \to \R^n$ be a continuous injection. Then, $F(U)$ is open.
+\end{conj}
+
+Although we cannot prove this conjecture, we can easily prove it in the case that $F$ is $C^1$ and its Jacobian is invertible, using the Inverse Function Theorem.
+
 \begin{prop}
-    \label{nondecprop}
-    Let $f: I \to \R$ be differentiable where $I \subseteq \R$ is an interval. Suppose that $f'(t) \geq 0$ for all $t \in I$. Then, $f$ is non-decreasing on its domain.
+    Let $U \subseteq \R^n$ be an open set, and $F: U \to \R^n$ be $C^1$ injection with $JF(p)$ invertible for all $p \in U$. Then, $F(U)$ is open.
 \end{prop}
 
 \begin{proof}
-We define the function $g: I \to \R$, $g(t) = -f(t)$. Since $f$ is differentiable on $I$, $g$ must also be differentiable. Furthermore, for all $t \in I$, we have $g'(t) = -f'(t) \leq 0$. Applying Proposition \ref{nonincprop}, we have that for all $x, y \in I$, $x < y \implies g(x) \geq g(y) \implies -f(x) \geq -f(y) \implies f(x) \leq f(y)$. Therefore, $f$ is non-decreasing.
-
+At each point $p \in U$, we use the Inverse Function Theorem to get an open neighbourhood $U_0^p \subseteq U$ containing $p$ such that $F(U_0^p)$ is open in $\R^n$. Now, notice that $\bigcup_{p \in U} U_0^p = U$. We then can now write $F(U)$ as the following:
+\[
+    F(U) = F\left(\bigcup_{p \in U} U_0^p\right) = \bigcup_{p \in U} F(U_0^p)
+\]
+Since $F(U)$ is a (uncountable) union of open sets, it must also be open.
 \end{proof}
 
-Now, we can prove Lemma \ref{mainlemma}.
+We can also use Invariance of Domain to prove Ray's conjecture.
 
-\begin{proof}[Proof (Lemma \ref{mainlemma}).]
-We take $\{t_1, \dots, t_n\} \subseteq \R$ to be the points where $f$ is not twice continuously differentiable. Then, we define the intervals $I_0 = (-\infty, t_1)$, $I_j = (t_j, t_{j + 1})$ for $1 \leq j \leq n - 1$, and $I_n = (t_n, \infty)$. We define functions $f_j: I_j \to \R$, $f_j(t) = f'(t)$, for $0 \leq j \leq n$. Notice that all $f_j$'s are differentiable since $f$ is twice differentiable on $\R \setminus \{t_1, \dots, t_n\}$ and $I_j$'s exclude all $t_i$'s. Furthermore, for all $0 \leq j \leq n$, $f'_j(t) = f''(t) \geq 0$. Thus, applying Proposition \ref{nondecprop}, we have that $f_j$ is non-decreasing for all $0 \leq j \leq n$. Hence, $f'$ is non-decreasing on each of $I_j$'s individually.
-
-Furthermore, we can show that $I_j$'s can be extended to their closures while keeping $f'$ non-decreasing on that $I_j$. Take $j \in \{1, \dots, n\}$ and consider $t_j$ and $I_{j - 1}$. Take $x \in I_{j - 1}$, and note that $(x, t_j) \subseteq I_{j - 1}$. Then, for all $y \in (x, t_j)$, $f'(x) \leq f'(y) \to f'(t_j)$ as $y \to t_j^-$ since $f'$ is continuous. Thus, $f'$ is non-decreasing on $I_{j - 1} \cup \{t_j\}$. Now, consider $I_{j}$. Take $y \in I_j$, and note that $(t_j, y) \subseteq I_j$. Then, for all $x \in (t_j, y)$, $f'(y) \geq f'(x) \to f'(t_j)$ as $x \to t_j^+$ since $f'$ is continuous. Thus, $f'$ is non-decreasing on $\{t_j\} \cup I_j$.
-
-Now, we take $x, y \in \R$ and assume $x < y$. If $x \in I_n = (t_n, \infty)$, then also $y \in I_n$. Since $f'$ is non-decreasing on $I_n$, we have $f'(x) \leq f'(y)$ in this case. Otherwise, we take $1 \leq i \leq n - 1$ so that $x \in I_i \cup \{t_{i + 1}\}$. If $y \in I_i \cup \{t_{i + 1}\}$, then  since $f'$ is non-decreasing on $I_{i} \cup \{t_{i + 1}\}$, we have $f'(x) \leq f'(y)$ in this case as well. Now, we can take $i + 1 \leq j \leq n$ so that $y \in \{t_j\} \cup I_j$. Since $f'$ is non-decreasing on $I_{k - 1} \cup \{t_{k}\}$ and $\{t_k\} \cup I_k$ for all $1 \leq k \leq n$, we have 
-\[
-f'(x) \leq f'(t_{i + 1}) \leq f'(c_{i + 1}) \leq f'(t_{i + 2}) \leq \cdots \leq f'(c_{j - 1}) \leq f'(t_j) \leq f'(y)
-\]
-where $c_k$ is some element of $I_k$. Thus, in all cases, $f'(x) \leq f'(y)$, hence $f'$ is non-decreasing on $\R$.
-
-Since $\lim_{t \to -\infty}f'(t) = -\infty$ and $\lim_{t \to \infty}f'(t) = \infty$, there are some $a, b \in \R$ so that $f'(a) < 0$ and $f'(b) > 0$. Since $f'$ is continuous on $\R$, by the single variable Intermediate Value Theorem, there exists some $t_0 \in (a, b)$ so that $f'(t_0) = 0$. Since $f'$ is non-decreasing, we have that for all $x \in (-\infty, t_0]$, $f'(x) \leq f'(t_0) = 0$. Similarly, for all $x \in [t_0, \infty)$, $f'(x) \geq f'(t_0) = 0$. Applying Proposition \ref{nonincprop}, $f$ is non-increasing on $(-\infty, t_0]$, and applying Proposition \ref{nondecprop}, $f$ is non-decreasing on $[t_0, \infty)$, which is exactly what we wanted to prove.
-
-\end{proof}
-
-\section{Proof of the $p$-norm Theorem}\label{PNormSection}
-
-In this section, we prove Theorem \ref{PNormTheorem}.
-
-\begin{proof}[Proof (Theorem \ref{PNormTheorem}).]
-We prove the theorem by showing that if $p < 1$, then $\norm{\cdot}_p$ is not a norm, and that if $p \geq 1$, then $\norm{\cdot}_p$ is a norm.
-
-Let $p < 1$, and consider the function $\norm{\cdot}_p: \R^n \to \R$, 
-\[
-\norm{\vec{x}}_p = \left(|x_1|^p + |x_2|^p + \cdots + |x_n|^p\right)^{1/p}
-\]
-Notice that for $p \leq 0$, $\norm{\vec{0}}_p = \left(0^p + 0^p + \cdots + 0^p\right)^{1/p}$ is undefined, since $0^p$ is undefined for $p \leq 0$. This means that $N$ is not a norm for such $p$.
-
-For $0 < p < 1$, consider the unit vectors $\vec{e}_1 = (1, 0, \dots, 0) \in \R^n$ and $\vec{e}_2 = (0, 1, 0, \dots, 0) \in \R^n$. Then we get
-\[
-    \norm{\vec{e}_1 + \vec{e}_2}_p = \norm{(1, 1, 0, \dots, 0)}_p = (1^p + 1^p + 0^p + \cdots + 0^p)^{1/p} = 2^{1/p}
-\]
-and
-\[
-    \norm{\vec{e}_1}_p = \norm{\vec{e}_2}_p = (1^p)^{1/p} = 1
-\]
-Since $0 < p < 1$, $\frac{1}{p} > 1$, so 
-\[
-\norm{\vec{e}_1 + \vec{e}_2}_p = 2^{1/p} > 2 = 1 + 1 = \norm{\vec{e}_1}_p + \norm{\vec{e}_2}_p
-\]
-which means that $\norm{\cdot}_p$ does not satisfy the triangle inequality. Therefore, $\norm{\cdot}_p$ is not a norm for $p < 1$.\\
-
-Now, let $p \geq 1$. We will handle the $p = 1$ case separately.
-
-\underbar{Positive Definiteness:} Let $\vec{x} \in \R^n$. Then, $\norm{\vec{x}}_1 = (|x_1|^1 + \cdots + |x_n|^1)^{1/1} = |x_1| + \cdots + |x_n|$. Notice that for all $i$, $|x_i| \geq 0$, so we must have $\norm{\vec{x}}_1 \geq 0$. Also, $\|\vec{0}\|_1 = |0| + \cdots + |0| = 0$. Now, assume $\norm{\vec{x}}_1 = 0$. Then, 
-\[
-    \norm{\vec{x}}_1 = |x_1| + \cdots + |x_n| = 0
-\]
-$|x_1| + \cdots + |x_n|$ is a sum of non-negative terms, so it can only be $0$ if each individual term is 0. Thus, for all $i$, $x_i = 0$, hence $\vec{x} = \vec{0}$. Thus, $\norm{\vec{x}}_1 \geq 0$ for all $\vec{x} \in \R^n$ and $\norm{\vec{x}}_1 = 0 \iff \vec{x} = \vec{0}$, so $\norm{\cdot}_1$ is positive definite.
-
-\underbar{Homogeneity:} Let $\vec{x} \in \R^n$ and $c \in \R$. Then,
-\begin{align*}
-    \norm{c\vec{x}}_1
-    &= (|cx_1|^1 + \cdots + |cx_n|^1)^{1/1} &\\
-    &= |cx_1| + \cdots + |cx_n| &\\
-    &= |c||x_1| + \cdots + |c||x_n| &\\
-    &= |c|(|x_1| + \cdots + |x_n|) &\\
-    &= |c|\norm{\vec{x}}_1
-\end{align*}
-Thus, $\norm{\cdot}_1$ is homogeneous.
-
-\underbar{Triangle Inequality:} Let $\vec{x}, \vec{y} \in \R^n$. Then,
-\begin{align*}
-    \norm{\vec{x} + \vec{y}}_1
-    &= |x_1 + y_1| + \cdots + |x_n + y_n| &\\
-    &\leq |x_1| + |y_1| + \cdots + |x_n| + |y_n| &&\text{(By Triangle Inequality for Absolute Value)} &&\\
-    &= |x_1| + \cdots + |x_n| + |y_1| + \cdots + |y_n| &\\
-    &= \norm{\vec{x}}_1 + \norm{\vec{y}}_1
-\end{align*}
-Hence, $\norm{\cdot}_1$ has triangle inequality property.
-
-Therefore, $\norm{\cdot}_1$ is a norm.
-
-Now, we handle the $p > 1$ case. For this, we will use the Magic Norm Theorem. Consider the set $B = \{\vec{x} \in \R^n: \norm{\vec{x}}_p \leq 1\}$. Next, we show that $B$ is absorbing, balanced, bounded, closed, and convex.
-
-\underbar{Absorbing:} Let $\vec{x} \in \R^n$. If $\vec{x} = \vec{0}$, then $\norm{\vec{x}}_p = \left(|0|^p + \cdots + |0|^p\right)^{1/p} = 0 \leq 1$, so $\vec{x} \in B$. Thus, we take $t = 1 > 0$ and $\vec{b} = \vec{x} \in B$, and we write $\vec{x} = 1\vec{x} = t\vec{b}$. Now, we assume $\vec{x} \neq \vec{0}$. This means that for some $i$, $x_i \neq 0$, so $|x_i|^p > 0 \implies |x_1|^p + \cdots + |x_n|^p > 0 \implies (|x_1|^p + \cdots + |x_n|^p)^{1/p} > 0 \implies \norm{\vec{x}}_p > 0$. Now, we take $t = \norm{\vec{x}}_p > 0$ and $\vec{b} = \frac{1}{\norm{\vec{x}}_p}\vec{x}$. Notice that
-\begin{align*}
-    \|\vec{b}\|_p 
-    &= \norm{\frac{1}{\norm{\vec{x}}_p}\vec{x}}_p &\\
-    &= \left(\left|\frac{1}{\norm{\vec{x}}_p}x_1\right|^p + \cdots + \left|\frac{1}{\norm{\vec{x}}_p}x_n\right|^p\right)^{1/p} &\\
-    &= \left(\left(\frac{1}{\norm{\vec{x}}_p}\right)^p|x_1|^p + \cdots + \left(\frac{1}{\norm{\vec{x}}_p}\right)^p|x_n|^p\right)^{1/p} &\\
-    &= \frac{1}{\norm{\vec{x}}_p}\left(|x_1|^p + \cdots + |x_n|^p\right)^{1/p} &\\
-    &= \frac{1}{\norm{\vec{x}}_p}\norm{\vec{x}}_p &\\
-    &= 1
-\end{align*}
-Since $\|\vec{b}\|_p = 1 \leq 1$, $\vec{b} \in B$. Now, notice that $\vec{x} = \norm{\vec{x}}_p \cdot \frac{1}{\norm{\vec{x}}_p}\vec{x} = t\vec{b}$. In both cases, we get $\vec{x} = t\vec{b}$ for some $t > 0$ and $\vec{b} \in B$, hence, $B$ is absorbing.
-
-\underbar{Balanced:} Let $\vec{b} \in B$ and $t \in [-1, 1]$. Then, $\|\vec{b}\|_p \leq 1$ and $|t| \leq 1$. Now, we get
-\begin{align*}
-    \|t\vec{b}\|_p
-    &= (|tb_1|^p + \cdots + |tb_n|^p)^{1/p} &\\
-    &= (|t|^p|b_1|^p + \cdots + |t|^p|b_n|^p)^{1/p} &\\
-    &= |t|(|b_1|^p + \cdots + |b_n|^p)^{1/p} &\\
-    &= |t|\|\vec{b}\|_p &\\
-    &\leq 1
-\end{align*}
-Thus, $\|t\vec{b}\|_p \leq 1$, so $t\vec{b} \in B$. Hence, $B$ is balanced.
-
-\underbar{Bounded:} We will show that $B$ is bounded over the 1-norm, which by equivalence of norms, would mean that $B$ is bounded over all norms. Let $\vec{x}, \vec{y} \in B$. Notice that for any $1 \leq i \leq n$, $|x_i|^p \leq |x_1|^p + \cdots + |x_n|^p \implies |x_i| \leq (|x_1|^p + \cdots + |x_n|^p)^{1/p} = \norm{\vec{x}}_p \leq 1$. Similarly, $|y_i| \leq 1$ for any $1 \leq i \leq n$. Thus, $\norm{\vec{x}}_1 = |x_1| + \cdots + |x_n| \leq n$ and $\norm{\vec{y}}_1 = |y_1| + \cdots + |y_n| \leq n$. Now, we have $\norm{\vec{x} - \vec{y}}_1 \leq \norm{\vec{x}}_1 + \norm{\vec{y}}_1 \leq 2n$. This means that distances between elements of $B$ are bounded above by a constant $2n$, hence $B$ must be bounded.
-
-\underbar{Closed:} We will show that $B$ is closed over the 1-norm, which by equivalence of norms, would mean that $B$ is closed over all norms. To do so, we will show that $\norm{\cdot}_p: (\R^n, \norm{\cdot}_1) \to (\R, |\cdot|)$ is continuous, and then apply topological continuity.
-
-Define $f_a: ([0, \infty), |\cdot|) \to ([0, \infty), |\cdot|)$, $f_a(t) = t^a$, $g: (\R, |\cdot|) \to ([0, \infty), |\cdot|)$, $g = |\cdot|$, and $h_i: (\R^n, \norm{\cdot}_1) \to (\R, |\cdot|)$, $h_i(\vec{x}) = x_i$ for $1 \leq i \leq n$. Then, notice that we can write the following:
-\[
-    \norm{\cdot}_p = f_{1/p} \circ (f_p \circ g \circ h_1 + \cdots + f_p \circ g \circ h_n)
-\]
-Notice that $g$ is continuous, and for $p > 1$, $f_{1/p}$ and $f_p$ are continuous. Furthermore, $h_i$'s are linear functions with finite dimensional domain, hence are also continuous. Thus, $\norm{\cdot}_p$ is continuous as a combination of continuous functions. Now, $B = \{\vec{x} \in \R^n: \norm{\vec{x}}_p \leq 1\} = \norm{(-\infty, 1]}_p^{-1}$ is the pre-image of a closed set, so $B$ must also be closed by topological continuity.
-
-\underbar{Convex:} Let $\vec{x}, \vec{y} \in B$. Define the function $f: \R \to \R$, 
-\[
-f(t) = (\norm{t\vec{x} + (1 - t)\vec{y}}_p)^p = |(x_1 - y_1)t + y_1|^p + \cdots + |(x_n - y_n)t + y_n|^p
-\]
-Notice that $t\vec{x} + (1 - t)\vec{y} \in B$ if and only if $f(t) \leq 1$, so if we show that $f(t) \leq 1$ for all $t \in [0, 1]$, we will have that $B$ is convex.
-
-We first show that $f$ satisfies the conditions of Lemma \ref{mainlemma}. Define the functions $g_i: \R \to \R, g_i(t) = |(x_i - y_i)t + y_i|^p$ for $1 \leq i \leq n$. Notice that if $x_i - y_i = 0$, then $g_i$ is constant, so it is twice differentiable with $g_i''(t) = 0 \geq 0$. Otherwise, take $a = |x_i - y_i| > 0$ and $b = y_i$ if $x_i - y_i > 0$ and $b = -y_i$ otherwise. Notice that $g_i(t) = |(x_i - y_i)t + y_i|^p = |at + b|^p$ for all $t \in \R$. (Trust me bro) 
-
-On the interval $(-\infty, \frac{-b}{a})$, we have $g_i(t) = (-at - b)^p$ which is differentiable with a continuous derivative of $g_i'(t) = -pa(-at - b)^{p - 1} = -pa|at + b|^{p - 1}$. Furthermore, $g_i$ is twice differentiable on this interval with with $g_i''(t) = p(p - 1)(-a)^2(-at - b)^{p - 2} = p(p - 1)a^2|at + b|^{p - 2} \geq 0$ since $p > 1$. 
-
-Similarly, on the interval $(\frac{-b}{a}, \infty)$, $g_i(t) = (at + b)^p$ which is continuously differentiable with $g_i'(t) = pa(at + b)^{p - 1} = pa|at + b|^{p - 1}$. Furthermore, $g_i''(t) = p(p - 1)a^2(at + b)^{p - 2} = p(p - 1)a^2|at + b|^{p - 2} \geq 0$.
-
-Now, notice that \[
-    \frac{-(at + b)^p}{t + \frac{b}{a}} \leq \frac{|at + b|^p}{t + \frac{b}{a}} \leq \frac{(at + b)^p}{t + \frac{b}{a}}
-\]
-and that for $p > 1$, both the left and the right terms go to 0 as $t \to -\frac{b}{a}$. By the Squeeze Theorem, this means that
-\[
-    g_i'\left(-\frac{b}{a}\right) = \lim_{t \to -\frac{b}{a}} \frac{|at + b|^p}{t + \frac{b}{a}} = 0
-\]
-Furthermore, notice that as $t \to \left(-\frac{b}{a}\right)^-$, $g_i'(t) = -pa|at + b|^{p - 1} \to 0$ and as $t \to \left(-\frac{b}{a}\right)^+$, $g_i'(t) = pa|at + b|^{p - 1} \to 0$. Thus, $g_i'(t)$ is continuously differentiable.
-
-Now, we have that $g_i$ is continuously differentiable on $\R$ and twice differentiable on all $\R$ except, possibly, for a single point. Furthermore, for all $t \in \R$ where $g_i$ is twice differentiable, $g_i''(t) \geq 0$. Also, as $t \to -\infty$, $g_i'(t) = -pa|at + b|^{p - 1} \to -\infty$, and as $t \to \infty$, $g'(t) = pa|at + b|^{p - 1} \to \infty$.
-
-Now, notice that $f = g_1 + g_2 + \cdots + g_n$. Since each $g_i$ is continuously differentiable, $f$ is also continuously differentiable. Since each $g_i$ is twice differentiable on all $\R$ but a single point, $f$ is twice differentiable on all $\R$ but finitely many points. Since where all $g_i$'s exist, $g_i''(t) \geq 0$, we also have $f''(t) = g_1''(t) + \cdots + g_n''(t) \geq 0$ as a sum of non-negative terms. Finally, since $\lim_{t \to -\infty}g_i(t) = -\infty$ and $\lim_{t \to \infty}g_i(t) = \infty$ for all $i$, we also have $\lim_{t \to -\infty} f(t) = -\infty$ and $\lim_{t \to \infty} f(t) = \infty$. This allows us to apply Lemma \ref{mainlemma} to get some $t_0 \in \R$ so that $f$ is non-increasing on $(-\infty, t_0]$ and non-decreasing on $[t_0, \infty)$.\\
-
-Next, we show that the maximum of $f$ on $[0, 1]$ is either $f(0)$ or $f(1)$. Consider the cases $t_0 \leq 0$, $0 < t_0 < 1$, and $1 \leq t_0$.
-
-\textit{Case 1:} $t_0 \leq 0$. In this case, we have that $f$ is non-decreasing on $[0, 1] \subseteq [t_0, \infty)$. This means that $f(1) \geq f(t)$ for all $t \in [0, 1]$, so $f(1)$ is the maximum of $f$ on $[0, 1]$.
-
-\textit{Case 2:} $t_0 \geq 1$. In this case, we have that $f$ is non-increasing on $[0, 1] \subseteq (-\infty, t_0]$. This means that $f(0) \geq f(t)$ for all $t \in [0, 1]$, so $f(0)$ is the maximum of $f$ on $[0, 1]$.
-
-\textit{Case 3:} $0 < t_0 < 1$. In this case, we have that $f$ is non-increasing on $[0, t_0] \subseteq (-\infty, t_0]$ and non-decreasing on $[t_0, 1] \subseteq [t_0, \infty)$. This means that $f(0) \geq f(t)$ for all $t \in [0, t_0]$ and $f(1) \geq f(t)$ for all $t \in [t_0, 1]$. This implies that $\max\{f(0), f(1)\} \geq f(t)$ for all $t \in [0, 1]$, hence either $f(0)$ or $f(1)$ is the maximum of $f$ on $[0, 1]$.
-
-Now, we have that for all $t \in [0, 1]$, \[
-f(t) \leq \max\{f(0), f(1)\} = \max\{(\norm{\vec{y}}_p)^p, (\norm{\vec{x}}_p)^p\} \leq 1
-\]
-since $\norm{\vec{x}}_p, \norm{\vec{y}}_p \leq 1$ as $\vec{x}, \vec{y} \in B$. As was mentioned previously, this means that $t\vec{x} + (1 - t)\vec{y} \in B$, hence $B$ is convex.\\
-
-We have shown that $B$ is absorbing, balanced, convex, bounded, and closed, so by the Magic Norm Theorem, there exists a norm $\norm{\cdot}: \R^n \to \R$ so that $B = \{\vec{x} \in \R^n: \norm{\vec{x}} \leq 1\}$. We soon show that $\norm{\cdot}_p = \norm{\cdot}$, but before that, it is helpful to show that $\norm{\cdot}_p$ is homogeneous.
-
-Let $c \in \R$ and $\vec{x} \in \R^n$. Then, we have
-\begin{align*}
-    \norm{c\vec{x}}_p
-    &= (|cx_1|^p + \cdots + |cx_n|^p)^{1/p} &\\
-    &= (|c|^p|x_1|^p + \cdots + |c|^p|x_n|^p)^{1/p} &\\
-    &= |c|(|x_1|^p + \cdots + |x_n|^p)^{1/p} &\\
-    &= |c|\norm{\vec{x}}_p
-\end{align*}
-Hence, $\norm{\cdot}_p$ is homogeneous.
-
-Now, by way of contradiction, suppose that $\norm{\cdot}_p \neq \norm{\cdot}$. Then, there exists some $\vec{x} \in \R$ so that $\norm{\vec{x}}_p \neq \norm{\vec{x}}$. Notice that $\vec{x} \neq \vec{0}$, because if that was the case, we would have $\norm{\vec{x}} = 0 = \norm{\vec{x}}_p$. Then, we can take $c = \frac{1}{\norm{\vec{x}}} > 0$ and get
-\[
-    \norm{c\vec{x}} = |c|\norm{\vec{x}} = \frac{1}{\norm{\vec{x}}}\norm{\vec{x}} = 1
-\]
-which means that $c\vec{x} \in B$. Since $c\vec{x} \in B$, we must have $\norm{c\vec{x}}_p \leq 1$. Now, notice that if $\norm{c\vec{x}}_p = 1$, then $\norm{c\vec{x}}_p = \norm{c\vec{x}} \implies |c|\norm{\vec{x}}_p = |c|\norm{\vec{x}} \implies \norm{\vec{x}}_p = \norm{\vec{x}}$, but that is a contradiction. Hence, $\norm{c\vec{x}}_p < 1$. Furthermore, since $\vec{x} \neq \vec{0}$ and $c \neq 0$, we have $\norm{c\vec{x}}_p > 0$, so we take $t = \frac{1}{\norm{c\vec{x}}_p}$. Since $0 < \norm{c\vec{x}}_p < 1$, we have $t > 1$. Now, we have 
-\[
-\norm{tc\vec{x}}_p = t\norm{c\vec{x}}_p = \frac{1}{\norm{c\vec{x}}_p}\norm{c\vec{x}}_p = 1
-\]
-so $tc\vec{x} \in B$. However, we also have
-\[
-    \norm{tc\vec{x}} = t\norm{c\vec{x}} = t > 1
-\]
-so $tc\vec{x} \notin B$, which is a contradiction. Therefore, $\norm{\cdot}_p = \norm{\cdot}$, so $\norm{\cdot}_p$ is a norm.
-
-\end{proof}
-
-\section{Applications}
-
-The $p$-norm theorem is not widely applicable, but it can be used to prove the $p$-norms on $C[0, 1]$ and $l^p$, the spaces of continuous functions on $[0, 1]$ and $p$-summable sequences in $\R$, respectively.
-
-\begin{defn}[$p$-Summable Sequences]
-    We define $l^p$ to be the space of $p$-summable sequences in $\R$ -- that is, $l^p$ is the space of all sequences $(x_n)$ in $\R$ so that $\sum_{i = 1}^\infty |x_n|^p$ converges. You can verify that this is a linear subspace of the space of all sequences in $\R$.
-\end{defn}
-
-\begin{cor}[$p$-Norm on $l^p$]
-     For $p > 1$, the function $\norm{\cdot}_p: l^p \to \R$, $\norm{\vec{x}}_p = \left(\sum_{i = 1}^\infty |x_n|^p\right)^{1/p}$ is a norm.
+\begin{cor}[Ray's Conjecture]
+    \label{rayconj}
+    If $n \neq m$, then any open set in $\R^n$ is not homeomorphic to an open set in $\R^m$.
 \end{cor}
 
 \begin{proof}
-To prove that $\norm{\cdot}_p$ is a norm on $l^p$, we need to show that it is positive definite, homogeneous, and has triangle inequality. Also, where needed, we will use the fact that $\norm{\cdot}_p$ on $\R_n$ is a norm.
-
-\underbar{Positive Definiteness:} Let $X = (x_n) \in l^p$. Notice that
-\[
-    \norm{X}_p = \left(\sum_{i = 1}^\infty |x_i|^p\right)^{1/p}
-\]
-is a sum of non-negative terms, so $\norm{X}_p \geq 0$. Thus, we have $\norm{X}_p \geq 0$ for all $X \in l^p$.
-
-Notice that $\norm{0}_p = \left(\sum_{i = 1}^\infty |0|^p\right)^{1/p} = 0$. Now, assume that $\norm{X}_p = 0$ for some $X = (x_n) \in l^p$. Then, notice that $0 = \left(\sum_{i = 1}^\infty |x_i|^p\right)^{1/p} \geq |x_n|$ for all $n \in \N$. This means that $x_n = 0$ for all $n \in \N$, hence $X = 0$. Thus, we have $\norm{X}_p = 0 \iff X = 0$. Therefore, $\norm{\cdot}_p$ is positive definite.
-
-\underbar{Homogeneity:} Let $c \in \R$ and $X = (x_n) \in l^p$. Then, we have
-\begin{align*}
-    \norm{cX}_p
-    &= \left(\sum_{i = 1}^\infty |cx_i|^p\right)^{1/p} &\\
-    &= \left(|c|^p\sum_{i = 1}^\infty |x_i|^p\right)^{1/p} &\\
-    &= |c|\left(\sum_{i = 1}^\infty |x_i|^p\right)^{1/p} &\\
-    &= |c|\norm{X}_p
-\end{align*}
-Thus, $\norm{\cdot}_p$ is homogeneous.
-
-\underbar{Triangle Inequality:} Let $X = (x_n), Y = (y_n) \in l^p$. Furthermore, we define $\vec{x}_n = (x_1, \dots, x_n), \vec{y}_n = (y_1, \dots, y_n) \in \R^n$ for $n \geq 2$. By Theorem \ref{PNormTheorem}, for all $n \geq 2$, we have
-\[
-    \norm{\vec{x}_n + \vec{y}_n}_p \leq \norm{\vec{x}_n}_p + \norm{\vec{y}_n}_p \longimplies \left(\sum_{i = 1}^n |x_i + y_i|^p\right)^{1/p} \leq \left(\sum_{i = 1}^n |x_i|^p\right)^{1/p} + \left(\sum_{i = 1}^n |y_i|^p\right)^{1/p}
-\]
-Taking $n \to \infty$, we get
-\[
-    \left(\sum_{i = 1}^\infty |x_i + y_i|^p\right)^{1/p} \leq \left(\sum_{i = 1}^\infty |x_i|^p\right)^{1/p} + \left(\sum_{i = 1}^\infty |y_i|^p\right)^{1/p} \longimplies \norm{X + Y}_p \leq \norm{X}_p + \norm{Y}_p
-\]
-Thus, $\norm{\cdot}_p$ has triangle inequality. Therefore, $\norm{\cdot}_p: l^p \to \R$ is a norm.
-
+Let $n \neq m$. Then, without loss of generality, we take $m < n$. By way of contradiction, suppose we have open $U \in \R^n$ and open $V \in \R^m$ that are homeomorphic. Then, we have a homeomorphism $F: U \to V$. Now, consider the map $F_0: U \to V \times \{\vec{0} \in \R^{n - m}\}$, $F_0(\vec{x}) = (F(\vec{x}), \vec{0})$. By injectivity of $F$, $F_0$ is also injective. Furthermore, $U \subseteq \R^n$ is open, and $V \times \{\vec{0} \in \R^{n - m}\} \subseteq \R^n$, so Invariance of Domain applies. Thus, we have that $V \times \{\vec{0} \in \R^{n - m}\} = F_0(U)$ is open in $\R^n$, which is clearly false.
 \end{proof}
 
-\begin{cor}[{$p$-Norm on $C[0, 1]$}]
-     For $p > 1$, the function $\norm{\cdot}_p: C[0, 1] \to \R$,\\ $\norm{f}_p = \left(\int_0^1 |f(x)|^p\,dx\right)^{1/p}$ is a norm. Note that this integral exists since continuous functions are integrable.
-\end{cor}
-
-\begin{proof}
-To prove that $\norm{\cdot}_p$ is a norm on $C[0, 1]$, we need to show that it is positive definite, homogeneous, and has triangle inequality. Also, where needed, we will use the fact that $\norm{\cdot}_p$ on $\R_n$ is a norm.
-
-\underbar{Positive Definiteness:} Let $f \in C[0, 1]$. Notice that
-\[
-    \norm{f}_p = \left(\int_0^1 |f(x)|^p \,dx \right)^{1/p}
-\]
-is an integral of a non-negative function, so $\norm{f}_p \geq 0$. Thus, we have $\norm{f}_p \geq 0$ for all $f \in C[0, 1]$.
-
-Notice that $\norm{0}_p = \left(\int_0^1 0 \,dx \right)^{1/p} = 0$. Now, let $f \neq 0 \in C[0, 1]$. That means that for some $x_0 \in [0, 1]$, $f(x_0) \neq 0$. Then, $|f(x_0)| > 0$, so we can find an $\varepsilon > 0$ such that for all $x \in [0, 1] \cap (x_0 - \varepsilon, x_0 + \varepsilon)$, $|f(x)| > \frac{1}{2}|f(x_0)|$. Now, we have
-\begin{align*}
-    \norm{f}_p
-    &= \left(\int_0^1 |f(x)|^p \,dx \right)^{1/p} &\\
-    &= \left(\int_0^{\max\{0, x_0 - \varepsilon\}} |f(x)|^p \,dx + \int_{\max\{0, x_0 - \varepsilon \}}^{\min\{x_0 + \varepsilon, 1\}} |f(x)|^p \,dx + \int_{\min\{x_0 + \varepsilon, 1\}}^1 |f(x)|^p \,dx \right)^{1/p} &\\
-    &> \left(\int_0^{\max\{0, x_0 - \varepsilon\}} 0 \,dx + \int_{\max\{0, x_0 - \varepsilon \}}^{\min\{x_0 + \varepsilon, 1\}} \left(\frac{1}{2}|f(x_0)|\right)^p \,dx + \int_{\min\{x_0 + \varepsilon, 1\}}^1 0 \,dx \right)^{1/p} &\\
-    &=\left(\frac{1}{2^p}|f(x_0)|^p\left(\min\{x_0 + \varepsilon, 1\} - \max\{0, x_0 - \varepsilon \}\right) \right)^{1/p} &\\
-    &=\frac{1}{2}|f(x_0)|\left(\min\{x_0 + \varepsilon, 1\} + \min\{0, \varepsilon - x_0 \}\right)^{1/p} &\\
-    &=\frac{1}{2}|f(x_0)|\left(\min\{2\varepsilon, 1, 1 + \varepsilon - x_0 \}\right)^{1/p} &\\
-    &>\frac{1}{2}|f(x_0)|\cdot\varepsilon^{1/p} &\\
-    &> 0
-\end{align*}
-Thus, $\norm{f}_p \neq 0$. Now, we have $f = 0 \implies \norm{f}_p = 0$ and $f \neq 0 \implies \norm{f}_p \neq 0$. Hence, $\norm{\cdot}_p$ is positive definite.
-
-\underbar{Homogeneity:} Let $c \in \R$ and $f \in C[0, 1]$. Then, we have
-\begin{align*}
-    \norm{cf}_p
-    &= \left(\int_0^1 |cf(x)|^p \,dx \right)^{1/p} &\\
-    &= \left(|c|^p\int_0^1 |f(x)|^p \,dx \right)^{1/p} &\\
-    &= |c|\left(\int_0^1 |f(x)|^p \,dx \right)^{1/p} &\\
-    &= |c|\norm{f}_p
-\end{align*}
-Thus, $\norm{\cdot}_p$ is homogeneous.
-
-\underbar{Triangle Inequality:} Let $f, g \in C[0, 1]$. Furthermore, we define $\vec{x}_n = (f(\frac{1}{n}), f(\frac{2}{n}), \dots, f(\frac{n}{n})), \vec{y}_n = (g(\frac{1}{n}), g(\frac{2}{n}), \dots, g(\frac{n}{n})) \in \R^n$ for $n \geq 2$. By Theorem \ref{PNormTheorem}, for all $n \geq 2$, we have
-\[
-    \norm{\vec{x}_n + \vec{y}_n}_p \leq \norm{\vec{x}_n}_p + \norm{\vec{y}_n}_p
-\]
-\[
-\longimplies \left(\sum_{i = 1}^n \left|f\left(\frac{i}{n}\right) + g\left(\frac{i}{n}\right)\right|^p\right)^{1/p} \leq \left(\sum_{i = 1}^n \left|f\left(\frac{i}{n}\right)\right|^p\right)^{1/p} + \left(\sum_{i = 1}^n \left|g\left(\frac{i}{n}\right)\right|^p\right)^{1/p}
-\]
-\[
-\longimplies \left(\sum_{i = 1}^n \frac{1}{n}\left|f\left(\frac{i}{n}\right) + g\left(\frac{i}{n}\right)\right|^p\right)^{1/p} \leq \left(\sum_{i = 1}^n \frac{1}{n}\left|f\left(\frac{i}{n}\right)\right|^p\right)^{1/p} + \left(\sum_{i = 1}^n \frac{1}{n}\left|g\left(\frac{i}{n}\right)\right|^p\right)^{1/p}
-\]
-Now, notice that for a continuous function $h: [0, 1] \to \R$, the integral of $h$ on $[0, 1]$ can be written as a limit of the Riemann sums. Written using the right rule, we get
-\[
-    \int_0^1 h(x) \,dx = \lim_{n \to \infty}\sum_{i = 1}^n \frac{1}{n} h\left(\frac{i}{n}\right)
-\]
-Taking $n \to \infty$ on the previous inequality, we get
-\[
-    \left(\lim_{n \to \infty}\sum_{i = 1}^n \frac{1}{n}\left|f\left(\frac{i}{n}\right) + g\left(\frac{i}{n}\right)\right|^p\right)^{1/p} \leq \left(\lim_{n \to \infty}\sum_{i = 1}^n \frac{1}{n}\left|f\left(\frac{i}{n}\right)\right|^p\right)^{1/p} + \left(\lim_{n \to \infty}\sum_{i = 1}^n \frac{1}{n}\left|g\left(\frac{i}{n}\right)\right|^p\right)^{1/p}
-\]
-\[
-\longimplies \left(\int_0^1 |f(x) + g(x)|^p\right)^{1/p} \leq \left(\int_0^1 |f(x)|^p\right)^{1/p} + \left(\int_0^1|g(x)|^p\right)^{1/p}
-\]
-\[
-\longimplies \norm{f + g}_p \leq \norm{f}_p + \norm{g}_p
-\]
-Thus, $\norm{\cdot}_p$ has triangle inequality. Therefore, $\norm{\cdot}_p: C[0, 1] \to \R$ is a norm.
-
-\end{proof}
 
 
 \end{document}
